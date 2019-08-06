@@ -38,30 +38,12 @@ class WC_ASM_Shipping_Method extends WC_Shipping_Method {
 	 */
 	public function init() {
 		$this->instance_form_fields = include( 'settings-wc-asm.php' );
-		// $this->init_form_fields();
 		$this->title                = $this->get_option( 'title' );
 		$this->tax_status           = $this->get_option( 'tax_status' );
 		$this->cost                 = $this->get_option( 'cost' );
 		$this->type                 = $this->get_option( 'type', 'class' );
 	}
 	
-	public function init_form_fields() {
-		$this->form_fields = array(
-			'title' => array(
-				'title' => __( 'Test WC Settings', 'wc-asm' ),
-				'type' => 'text',
-				'description' => __( 'stuff here.', 'wc-asm' ),
-				'default' => __( 'Oof', 'wc-asm' )
-			),
-			'default' => array(
-				'title' => __( 'Description', 'wc-asm' ),
-				'type' => 'textarea',
-				'description' => __( 'Description', 'wc-asm' ),
-				'default' => __( 'Pay this way!', 'wc-asm' )
-			)
-		);
-	}
-
     /**
 	 * Evaluate a cost from a sum/string.
 	 * @param  string $sum
@@ -153,35 +135,81 @@ class WC_ASM_Shipping_Method extends WC_Shipping_Method {
             $has_costs = false; // True when a cost is set. False if all costs are blank strings.
             $cost      = $this->get_option( 'cost' );
 
+			$shippable_qty = $this->get_package_item_qty( $package );
             if ( '' !== $cost ) {
                 $has_costs    = true;
                 $rate['cost'] = $this->evaluate_cost( $cost, array(
-                    'qty'  => $this->get_package_item_qty( $package ),
+                    'qty'  => $shippable_qty,
                     'cost' => $package['contents_cost'],
                 ) );
             }
 
             // Add shipping class costs.
             $shipping_classes = WC()->shipping->get_shipping_classes();
-            // if ( false ) {
+			
+			// if ( false ) {
 
             if ( ! empty( $shipping_classes ) ) {
                 $found_shipping_classes = $this->find_shipping_classes( $package );
-                $highest_class_cost     = 0;
+				$highest_class_cost     = 0;
+/*				$limited_by_class		= $this->get_option( 'classes' );
+				$limited_by_time		= $this->get_option( 'toggler' );
+				$class_quantities		= array();
 
+				if ( ! empty( $limited_by_class ) ) {
+					foreach ( $limited_by_class as $shipping_class ) {
+						$class_quantities[$shipping_class] = $this->get_option( $shipping_class . '_qty' );
+					}
+				}
+
+				if ( 'yes' === $limited_by_time ) {
+					$stop_ship = $this->get_option( 'day-stop' );
+					$stop_time = $this->get_option( 'time-stop' );
+
+					$begin_ship = $this->get_option( 'day-begin' );
+					$begin_time = $this->get_option( 'time-begin' );
+
+					$stop_datetime  = new WC_DateTime( strtotime( $stop_ship . ' ' . $stop_time ) );
+					$begin_datetime = new WC_DateTime( strtotime( $begin_ship . ' ' . $begin_time ) );
+					
+					$stop_timestamp  = $stop_datetime->getOffsetTimestamp();
+					$begin_timestamp = $begin_datetime->getOffsetTimestamp();
+
+					if ( $begin_timestamp > $stop_timestamp ) {
+						// return;
+					}
+
+					// $wc_date = new WC_DateTime();
+					// $store_timestamp = $wc_date->getOffsetTimestamp();
+					// $day = $store_timestamp->format('D');
+					// $hour = $store_timestamp->format('h');
+					// $minute = $store_timestamp->format('i');
+					// $seconds = $store_timestamp->format('s');
+				}
+*/
                 foreach ( $found_shipping_classes as $shipping_class => $products ) {
                     // Also handles BW compatibility when slugs were used instead of ids
                     $shipping_class_term = get_term_by( 'slug', $shipping_class, 'product_shipping_class' );
                     $class_cost_string   = $shipping_class_term && $shipping_class_term->term_id ? $this->get_option( 'class_cost_' . $shipping_class_term->term_id, $this->get_option( 'class_cost_' . $shipping_class, '' ) ) : $this->get_option( 'no_class_cost', '' );
+					$class_qty			 = array_sum( wp_list_pluck( $products, 'quantity' ) );
+					$class_cost			 = array_sum( wp_list_pluck( $products, 'line_total' ) );
 
+					/*if ( ! empty( $limited_by_class ) && isset( $class_quantities['sc_' . $shipping_class_term->term_id] ) && ( -1 !== (int)$class_quantities['sc_' . $shipping_class_term->term_id] && (int)$class_qty >= (int)$class_quantities['sc_' . $shipping_class_term->term_id] ) ) {
+						$arr = array( 'limited' => $limited_by_class, 'class_qts[]' => $class_quantities['sc_' . $shipping_class_term->term_id], 'class_qty' => $class_qty, 'class' => 'sc_' . $shipping_class_term->term_id );
+						// wp_die(print_r($arr));
+						error_log( $arr );
+						error_log( 'advanced shipping not available for cart');
+						return;
+					}
+*/
                     if ( '' === $class_cost_string ) {
                         continue;
                     }
 
                     $has_costs  = true;
                     $class_cost = $this->evaluate_cost( $class_cost_string, array(
-                        'qty'  => array_sum( wp_list_pluck( $products, 'quantity' ) ),
-                        'cost' => array_sum( wp_list_pluck( $products, 'line_total' ) ),
+                        'qty'  => $class_qty,
+                        'cost' => $class_cost,
                     ) );
 
                     if ( 'class' === $this->type ) {

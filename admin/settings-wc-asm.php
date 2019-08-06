@@ -66,25 +66,32 @@ $settings = array(
 		'description'	=> $cost_desc,
 		'default'		=> '0',
 		'desc_tip'		=> true,
-    ),
-    'classes' => array(
+	),
+);
+
+$settings['classes'] = array(
         'title'             => __( 'Shipping Class(es)', 'wc-asm' ),
         'type'              => 'multiselect',
         'description'       => __( 'Controls which shipping classes should determine when this shipping method is available.', 'wc-asm' ),
         'class'             => 'multiselect-asm',
-        // 'custom_attributes' => array(
-                // 'multiple' => 'multiple',
-                // 'data-attribute' => 'shipping_class',
-                // 'data-placeholder' => 'Select shipping class',
-        // ),
 		'options'			=> wc_asm_shipping_classes_array(),
-		// 'options'           => array_map( create_function( '$o', 'return $o->name;' ), $shipping_classes ),
-	),
-	'classes_qty' => array(
-		'parent_id' => 'woocommerce_wc_asm_classes',
-		'type'		=> 'text',
-		'description' => 'ooo',
-	),
+	);
+
+if ( ! empty( $shipping_classes ) ) {
+	foreach( $shipping_classes as $shipping_class ) {
+		if ( ! isset( $shipping_class->term_id ) ) {
+			continue;
+		}
+		$settings['sc_' . $shipping_class->term_id . '_qty'] = array(
+			'parent_id'		=> 'woocommerce_wc_asm_classes',
+			'type'			=> 'text',
+			'title'			=> $shipping_class->name . ' quantity limit',
+			'description'	=> '-1 for unlimited.',
+		);
+	}
+}
+
+$settings = array_merge( $settings, array(
     'toggler' => array(
 		'title'         => __( 'Enable time restrictions?', 'wc-asm' ),
 		'label'			=> ' ',
@@ -111,7 +118,7 @@ $settings = array(
 		'type'			=> 'text',
 		'class'			=> 'timelimited time-begin timepicker',
 	),
-);
+));
 
 if ( ! empty( $shipping_classes ) ) {
 	$settings['class_costs'] = array(
