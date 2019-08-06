@@ -1,3 +1,6 @@
 .DS_Store
 *.log
 node_modules
+woocommerce-advanced-shipping-methods
+wc-asm
+
