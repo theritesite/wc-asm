@@ -118,6 +118,39 @@ class WC_ASM_Shipping_Method extends WC_Shipping_Method {
 		return $calculated_fee;
 	}
 
+	protected function wc_asm_first_is_earlier( $first = array(), $second = array() ) {
+		if ( $first['day'] === $second['day'] ) {
+			if ( $first['hour'] < $second['hour'] ) {
+				return true;
+			}
+			elseif ( $first['hour'] === $second['hour'] ) {
+				if ( $first['minute'] < $second['minute'] ) {
+					return true;
+				}
+				elseif ( $first['minute'] === $second['minute'] ) {
+					if ( $first['seconds'] <= $second['seconds'] ) {
+						return true;
+					}
+					else {
+						return false;
+					}
+				}
+				else {
+					return false;
+				}
+			}
+			else {
+				return false;
+			}
+		}
+		elseif ( $first['day'] < $second['day'] ) {
+			return true;
+		}
+		else {
+			return false;
+		}
+	}
+
 	/**
 	 * calculate_shipping function.
 	 *
@@ -147,12 +180,11 @@ class WC_ASM_Shipping_Method extends WC_Shipping_Method {
             // Add shipping class costs.
             $shipping_classes = WC()->shipping->get_shipping_classes();
 			
-			// if ( false ) {
 
             if ( ! empty( $shipping_classes ) ) {
                 $found_shipping_classes = $this->find_shipping_classes( $package );
 				$highest_class_cost     = 0;
-/*				$limited_by_class		= $this->get_option( 'classes' );
+				$limited_by_class		= $this->get_option( 'classes' );
 				$limited_by_time		= $this->get_option( 'toggler' );
 				$class_quantities		= array();
 
@@ -169,24 +201,133 @@ class WC_ASM_Shipping_Method extends WC_Shipping_Method {
 					$begin_ship = $this->get_option( 'day-begin' );
 					$begin_time = $this->get_option( 'time-begin' );
 
-					$stop_datetime  = new WC_DateTime( strtotime( $stop_ship . ' ' . $stop_time ) );
-					$begin_datetime = new WC_DateTime( strtotime( $begin_ship . ' ' . $begin_time ) );
+					$stop_string = $stop_ship . ' ' . $stop_time;
+					$begin_string = $begin_ship . ' ' . $begin_time;
+
+					error_log( 'stop shipping: ' . $stop_string );
+					error_log( 'begin shipping: ' . $begin_string );
+
+					$stop_datetime  = new WC_DateTime( $stop_string );
+					$begin_datetime = new WC_DateTime( $begin_string );
 					
 					$stop_timestamp  = $stop_datetime->getOffsetTimestamp();
 					$begin_timestamp = $begin_datetime->getOffsetTimestamp();
 
-					if ( $begin_timestamp > $stop_timestamp ) {
-						// return;
+					$stop_day = $stop_datetime->format('N');
+					$begin_day = $begin_datetime->format('N');
+					$current_day = current_time('N');
+
+					$current_hour = current_time('H');
+					$current_minute = current_time('i');
+					$current_seconds = current_time('s');
+
+					$current_day = '7';
+					$current_hour = '02';
+					$current_minute = '00';
+					$current_seconds = '00';
+
+					$stop_hour = $stop_datetime->format('H');
+					$stop_minute = $stop_datetime->format('i');
+					$stop_seconds = $stop_datetime->format('s');
+
+					$begin_hour = $begin_datetime->format('H');
+					$begin_minute = $begin_datetime->format('i');
+					$begin_seconds = $begin_datetime->format('s');
+
+					$current_array = array( 'day' => $current_day, 'hour' => $current_hour, 'minute' => $current_minute, 'seconds' => $current_seconds );
+					$stop_array = array( 'day' => $stop_day, 'hour' => $stop_hour, 'minute' => $stop_minute, 'seconds' => $stop_seconds );
+					$begin_array = array( 'day' => $begin_day, 'hour' => $begin_hour, 'minute' => $begin_minute, 'seconds' => $begin_seconds );
+
+					if ( defined('WP_DEBUG') && WP_DEBUG ) {
+						error_log( 'current: ' . $current_day );
+						error_log( 'stop:     ' . $stop_day );
+						error_log( 'begin:   ' . $begin_day );
+
+						error_log( 'current h: ' . $current_hour );
+						error_log( 'stop h:     ' . $stop_hour );
+						error_log( 'begin h:   ' . $begin_hour );
+
+						error_log( 'current m: ' . $current_minute );
+						error_log( 'stop m:     ' . $stop_minute );
+						error_log( 'begin m:   ' . $begin_minute );
+
+						error_log( 'current s: ' . $current_seconds );
+						error_log( 'stop s:     ' . $stop_seconds );
+						error_log( 'begin s:   ' . $begin_seconds );
 					}
 
-					// $wc_date = new WC_DateTime();
-					// $store_timestamp = $wc_date->getOffsetTimestamp();
-					// $day = $store_timestamp->format('D');
-					// $hour = $store_timestamp->format('h');
-					// $minute = $store_timestamp->format('i');
-					// $seconds = $store_timestamp->format('s');
+					if ( $this->wc_asm_first_is_earlier( $stop_array, $current_array ) && $this->wc_asm_first_is_earlier( $current_array, $begin_array ) ) {
+						if ( defined('WP_DEBUG') && WP_DEBUG ) {
+							error_log( 'stop is before current.' );
+							error_log( 'current is before begin. Invalid.' ); // Reached here.
+						}
+						return;
+					}
+					elseif ( $this->wc_asm_first_is_earlier( $stop_array, $begin_array ) ) {
+						if ( defined('WP_DEBUG') && WP_DEBUG ) {
+							error_log( 'stop is before begin. Probably invalid?' );
+						}
+						if ( $this->wc_asm_first_is_earlier( $current_array, $begin_array ) ) {
+							if ( defined('WP_DEBUG') && WP_DEBUG ) {
+								error_log( 'current is before begin. Invalid.' ); // Reached here.
+							}
+							return;
+						}
+/*						if ( $this->wc_asm_first_is_earlier( $begin_array, $current_array ) ) {
+							if ( defined('WP_DEBUG') && WP_DEBUG ) {
+								error_log( 'begin is before current. Valid!' ); // Reached here.
+							}
+						}*/
+					}
+					elseif ( $this->wc_asm_first_is_earlier( $begin_array, $current_array ) ) {
+						if ( defined('WP_DEBUG') && WP_DEBUG ) {
+							error_log( 'begin is earlier than current' );
+						}
+						if ( $this->wc_asm_first_is_earlier( $stop_array, $current_array ) ) {
+							if ( defined('WP_DEBUG') && WP_DEBUG ) {
+								error_log( 'stop is earlier than current' );
+								error_log( 'both days are before the current time. Are we outside or inside the range?' );
+							}
+							if ( $this->wc_asm_first_is_earlier( $begin_array, $stop_array ) ) {
+								if ( defined('WP_DEBUG') && WP_DEBUG ) {
+									error_log( 'begin is earlier than stop.' );
+									error_log( 'this means HUGE range, we are invalid.' ); // Reached here.
+								}
+								return;
+							}
+							/*elseif ( $this->wc_asm_first_is_earlier( $stop_array, $begin_array ) ) {
+								if ( defined('WP_DEBUG') && WP_DEBUG ) {
+									error_log( 'stop is earlier than begin' );
+									error_log( 'small range, we are okay. VALID.' ); // Reached here.
+								}
+							}*/
+						}
+/*						if ( $this->wc_asm_first_is_earlier( $current_array, $stop_array ) ) {
+							if ( defined('WP_DEBUG') && WP_DEBUG ) {
+								error_log( 'current is earlier than stop. Valid.' );
+							}
+						}*/
+					}
+					/*
+					elseif ( $this->wc_asm_first_is_earlier( $current_array, $stop_array ) && ( $this->wc_asm_first_is_earlier( $begin_array, $current_array ) || $this->wc_asm_first_is_earlier( $stop_array, $begin_array ) ) ) {
+						error_log( 'current is before stop.' );
+						if ( $this->wc_asm_first_is_earlier( $begin_array, $current_array ) ) {
+							error_log( 'begin is before current. Valid.' );
+						}
+						if ( $this->wc_asm_first_is_earlier( $stop_array, $begin_array ) ) {
+							error_log( 'stop is before begin, but all after current. Valid.' ); // Reached here.
+						}
+					}
+					// elseif ( $this->wc_asm_first_is_earlier( $current_array, $stop_array ) ) {
+					// 	error_log( 'current is before stop. BUT begin is NOT before current AND stop is NOT before begin.' );
+					// } // This is probably never reached from the section above catching everything else.
+					else {
+						error_log( 'fell through.' );
+					}
+					*/
+
 				}
-*/
+
                 foreach ( $found_shipping_classes as $shipping_class => $products ) {
                     // Also handles BW compatibility when slugs were used instead of ids
                     $shipping_class_term = get_term_by( 'slug', $shipping_class, 'product_shipping_class' );
@@ -194,14 +335,13 @@ class WC_ASM_Shipping_Method extends WC_Shipping_Method {
 					$class_qty			 = array_sum( wp_list_pluck( $products, 'quantity' ) );
 					$class_cost			 = array_sum( wp_list_pluck( $products, 'line_total' ) );
 
-					/*if ( ! empty( $limited_by_class ) && isset( $class_quantities['sc_' . $shipping_class_term->term_id] ) && ( -1 !== (int)$class_quantities['sc_' . $shipping_class_term->term_id] && (int)$class_qty >= (int)$class_quantities['sc_' . $shipping_class_term->term_id] ) ) {
+					if ( ! empty( $limited_by_class ) && ( -1 !== (int)$class_quantities['sc_' . $shipping_class_term->term_id] && (int)$class_qty > (int)$class_quantities['sc_' . $shipping_class_term->term_id] ) ) {
 						$arr = array( 'limited' => $limited_by_class, 'class_qts[]' => $class_quantities['sc_' . $shipping_class_term->term_id], 'class_qty' => $class_qty, 'class' => 'sc_' . $shipping_class_term->term_id );
-						// wp_die(print_r($arr));
 						error_log( $arr );
 						error_log( 'advanced shipping not available for cart');
 						return;
 					}
-*/
+
                     if ( '' === $class_cost_string ) {
                         continue;
                     }
@@ -222,8 +362,8 @@ class WC_ASM_Shipping_Method extends WC_Shipping_Method {
                 if ( 'order' === $this->type && $highest_class_cost ) {
                     $rate['cost'] += $highest_class_cost;
                 }
-            }
-        // }
+			}
+			
             // Add the rate
             if ( $has_costs ) {
                 $this->add_rate( $rate );
@@ -250,7 +390,7 @@ class WC_ASM_Shipping_Method extends WC_Shipping_Method {
              * 		}.
              */
             do_action( 'woocommerce_' . $this->id . '_shipping_add_rate', $this, $rate );
-        // }
+
     }
 
 	/**

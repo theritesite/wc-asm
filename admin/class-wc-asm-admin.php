@@ -102,7 +102,7 @@ class WC_ASM_Admin {
 
 			wp_register_script( $this->plugin_name, plugin_dir_url( __FILE__ ) . 'js/wc-asm-admin.js', array( 'jquery'/*, 'wc-shipping-zone-methods'*/ ), $this->version );
 			wp_localize_script( $this->plugin_name, 'shippingZoneMethods2LocalizeScript', array(
-				'debug' => true,
+				'debug'
 			));
 			wp_enqueue_script( $this->plugin_name );
 
@@ -126,6 +126,7 @@ class WC_ASM_Admin {
 
 	public function register_shipping_method_test( $package ) {
 		// error_log('in test method with package');
+		// error_log( print_r(array()) );
 		// error_log( print_r($package) );
 	}
 }

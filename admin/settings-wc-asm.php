@@ -38,6 +38,21 @@ if ( ! function_exists( 'wc_asm_shipping_classes_array' ) ) {
 	}
 }
 
+if ( ! function_exists( 'wc_asm_get_timestamp' ) ) {
+	function wc_asm_get_timestamp( $arg = 0 ) {
+		// $wc_date = new WC_DateTime();
+		// $wc_date->setTimezone(get_option('gmt_offset'));
+		// if( $arg ) {
+			return current_time('D h:i:s A');
+			// return $wc_date->date_i18n('D H:i:s A');
+		// }
+		// elseif ( $arg === 2 ) {
+			// return get_option('gmt_offset');
+			// return $wc_date->getTimezone()->getName();
+		// }
+	}
+}
+
 /**
  * Settings for flat rate shipping.
  */
@@ -97,6 +112,14 @@ $settings = array_merge( $settings, array(
 		'label'			=> ' ',
         'type'          => 'checkbox',
 		'class'         => 'time-enabled slider',
+	),
+	'time-display' => array(
+		'title'			=> __( 'Current store time.', 'wc-asm' ),
+		'type'			=> 'text',
+		'disabled'		=> true,
+		'default'		=> wc_asm_get_timestamp(),
+		'placeholder'	=> wc_asm_get_timestamp(),
+		// 'description'	=> wc_asm_get_timestamp(2),
 	),
 	'day-stop' => array(
 		'title'			=> __( 'Day of week and time to stop shipping method', 'wc-asm' ),

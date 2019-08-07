@@ -1,4 +1,4 @@
-(function( $, data, wp, ajaxurl ) {
+(function( $ ) {
 
 	$( document ).ready(function() {
 		$('input.timepicker.input-text.regular-input').timepicker({ dropdown: true, scrollbar: true });
@@ -6,8 +6,8 @@
 		$('select#woocommerce_wc_asm_classes').trigger('checkClasses');
 	});
 
-	$( document.body ).on( 'change', 'select#woocommerce_wc_asm_classes', function(e) {$(this).trigger('checkClasses'); console.log('stuff');})
-					  .on( 'change', 'input#woocommerce_wc_asm_toggler', function(e){$(this).trigger('checkTimeLimited');});
+	$( document ).on( 'change', 'select#woocommerce_wc_asm_classes', function(e) {$(this).trigger('checkClasses');})
+					  .on( 'change', 'input#woocommerce_wc_asm_toggler', function(e){$(this).trigger('checkTimeLimited')});
 
 	var displayTimeFields = function( arg ) {
 		if ( shippingZoneMethods2LocalizeScript.debug === true ) {
@@ -24,13 +24,13 @@
 		// $el.css("display", arg === 1 ? '' : 'none' );
 	}
 
-	$( document.body ).on( 'checkTimeLimited', 'input#woocommerce_wc_asm_toggler', function(e) {
+	$( document ).on( 'checkTimeLimited', 'input#woocommerce_wc_asm_toggler', function(e) {
 		console.log($(this).prop('checked'));
 		displayTimeFields( $(this).prop('checked') === true ? 1 : 0 );
 	});
 
 	var displayQtyFields = function( arr ) {
-		if ( shippingZoneMethods2LocalizeScript.debug === true || true ) {
+		if ( shippingZoneMethods2LocalizeScript.debug === true ) {
 			console.log( 'in displayQtyFields' );
 			console.log( arr );
 		}
@@ -49,7 +49,7 @@
 		});
 	};
 
-	$( document.body ).on( 'checkClasses', 'select#woocommerce_wc_asm_classes', function(e) {
+	$( document ).on( 'checkClasses', 'select#woocommerce_wc_asm_classes', function(e) {
 		
 		var options = this.selectedOptions;
 		var selected = set_arr = [];
@@ -71,7 +71,7 @@
 			set_arr[e] = flag;
 		});
 
-		if ( shippingZoneMethods2LocalizeScript.debug === true || true ) {
+		if ( shippingZoneMethods2LocalizeScript.debug === true ) {
 			console.log( 'All values:' );
 			console.log( values );
 			console.log( 'Selected values: ' );
