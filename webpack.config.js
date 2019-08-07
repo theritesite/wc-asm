@@ -1,6 +1,6 @@
 const path = require( 'path' );
 const CopyWebpackPlugin = require( 'copy-webpack-plugin' );
-const WebpackZipPlugin = require('webpack-zip-plugin')
+const WebpackZipPlugin = require('webpack-zip-plugin');
 const browserSyncPlugin = require( 'browser-sync-webpack-plugin' );
 const OptimizeCSSAssetsPlugin = require("optimize-css-assets-webpack-plugin");
 const UglifyJsPlugin = require("uglifyjs-webpack-plugin");
@@ -31,7 +31,7 @@ const config = env => {
     var endFolder = endPath + '/' + pluginSlug;
 
 
-    if(env === 'production' ) {
+    if( env.NODE_ENV === 'production' ) {
         pluginList.push(
             new CopyWebpackPlugin( [
                     { from: path.resolve( __dirname, 'admin' ) + '/**', to: buildFolder },
