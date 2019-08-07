@@ -87,7 +87,7 @@ $settings = array(
 $settings['classes'] = array(
         'title'             => __( 'Shipping Class(es)', 'wc-asm' ),
         'type'              => 'multiselect',
-        'description'       => __( 'Controls which shipping classes should determine when this shipping method is available.', 'wc-asm' ),
+        'description'       => __( 'Controls which shipping classes should determine when this shipping method is available. If no class is selected, any shipping class will be valid for any quantity.', 'wc-asm' ),
         'class'             => 'multiselect-asm',
 		'options'			=> wc_asm_shipping_classes_array(),
 	);
@@ -117,9 +117,9 @@ $settings = array_merge( $settings, array(
 		'title'			=> __( 'Current store time.', 'wc-asm' ),
 		'type'			=> 'text',
 		'disabled'		=> true,
+		'class'			=> 'timelimited',
 		'default'		=> wc_asm_get_timestamp(),
 		'placeholder'	=> wc_asm_get_timestamp(),
-		// 'description'	=> wc_asm_get_timestamp(2),
 	),
 	'day-stop' => array(
 		'title'			=> __( 'Day of week and time to stop shipping method', 'wc-asm' ),
