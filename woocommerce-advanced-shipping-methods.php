@@ -31,7 +31,7 @@ if ( ! defined( 'WPINC' ) ) {
 /**
  * Current plugin version.
  */
-define( 'WC_ASM_VERSION', '0.0.1' );
+define( 'WC_ASM_VERSION', '1.0.0' );
 
 define( 'WC_ASM_UPDATER_URL', 'https://www.theritesites.com' );
 
