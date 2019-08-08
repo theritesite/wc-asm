@@ -217,19 +217,31 @@ class WC_ASM_Shipping_Method extends WC_Shipping_Method {
 		}
 		elseif ( $this->wc_asm_first_is_earlier( $stop_array, $begin_array ) ) {
 			if ( defined('WP_DEBUG') && WP_DEBUG ) {
-				error_log( 'stop is before begin. Probably invalid?' );
+				error_log( 'stop is before begin.' );
 			}
 			if ( $this->wc_asm_first_is_earlier( $current_array, $begin_array ) ) {
 				if ( defined('WP_DEBUG') && WP_DEBUG ) {
-					error_log( 'current is before begin. Invalid.' ); // Reached here.
+					error_log( 'current is before begin.' ); // Reached here.
 				}
-				return false;
+				if ( $this->wc_asm_first_is_earlier( $current_array, $stop_array ) ) {
+					if ( defined('WP_DEBUG') && WP_DEBUG ) {
+						error_log( 'current is before stop. Valid. ' );
+					}
+					return true;
+				}
+				else {
+					if ( defined('WP_DEBUG') && WP_DEBUG ) {
+						error_log( 'current is after stop. Invalid.' );
+					}
+					return false;
+				}
 			}
-/*						if ( $this->wc_asm_first_is_earlier( $begin_array, $current_array ) ) {
+			if ( $this->wc_asm_first_is_earlier( $begin_array, $current_array ) ) {
 				if ( defined('WP_DEBUG') && WP_DEBUG ) {
 					error_log( 'begin is before current. Valid!' ); // Reached here.
 				}
-			}*/
+				return true;
+			}
 		}
 		elseif ( $this->wc_asm_first_is_earlier( $begin_array, $current_array ) ) {
 			if ( defined('WP_DEBUG') && WP_DEBUG ) {
@@ -247,27 +259,31 @@ class WC_ASM_Shipping_Method extends WC_Shipping_Method {
 					}
 					return false;
 				}
-				/*elseif ( $this->wc_asm_first_is_earlier( $stop_array, $begin_array ) ) {
+				elseif ( $this->wc_asm_first_is_earlier( $stop_array, $begin_array ) ) {
 					if ( defined('WP_DEBUG') && WP_DEBUG ) {
 						error_log( 'stop is earlier than begin' );
 						error_log( 'small range, we are okay. VALID.' ); // Reached here.
 					}
-				}*/
+					return true;
+				}
 			}
-/*						if ( $this->wc_asm_first_is_earlier( $current_array, $stop_array ) ) {
+			if ( $this->wc_asm_first_is_earlier( $current_array, $stop_array ) ) {
 				if ( defined('WP_DEBUG') && WP_DEBUG ) {
 					error_log( 'current is earlier than stop. Valid.' );
 				}
-			}*/
+				return true;
+			}
 		}
-		/*
+		
 		elseif ( $this->wc_asm_first_is_earlier( $current_array, $stop_array ) && ( $this->wc_asm_first_is_earlier( $begin_array, $current_array ) || $this->wc_asm_first_is_earlier( $stop_array, $begin_array ) ) ) {
 			error_log( 'current is before stop.' );
 			if ( $this->wc_asm_first_is_earlier( $begin_array, $current_array ) ) {
 				error_log( 'begin is before current. Valid.' );
+				return true;
 			}
 			if ( $this->wc_asm_first_is_earlier( $stop_array, $begin_array ) ) {
 				error_log( 'stop is before begin, but all after current. Valid.' ); // Reached here.
+				return true;
 			}
 		}
 		// elseif ( $this->wc_asm_first_is_earlier( $current_array, $stop_array ) ) {
@@ -276,7 +292,7 @@ class WC_ASM_Shipping_Method extends WC_Shipping_Method {
 		else {
 			error_log( 'fell through.' );
 		}
-		*/
+		
 
 		return true;
 	}
@@ -338,6 +354,7 @@ class WC_ASM_Shipping_Method extends WC_Shipping_Method {
 					$class_qty			 = array_sum( wp_list_pluck( $products, 'quantity' ) );
 					$class_cost			 = array_sum( wp_list_pluck( $products, 'line_total' ) );
 
+					error_log( 'we are here now' );
 					if ( ! empty( $limited_by_class ) && ( -1 !== (int)$class_quantities['sc_' . $shipping_class_term->term_id] && (int)$class_qty > (int)$class_quantities['sc_' . $shipping_class_term->term_id] ) ) {
 						if ( defined('WP_DEBUG') && WP_DEBUG ) {
 							$arr = array( 'limited' => $limited_by_class, 'class_qts[]' => $class_quantities['sc_' . $shipping_class_term->term_id], 'class_qty' => $class_qty, 'class' => 'sc_' . $shipping_class_term->term_id );
@@ -345,6 +362,18 @@ class WC_ASM_Shipping_Method extends WC_Shipping_Method {
 							error_log( 'advanced shipping not available for cart due to quantity limits.');
 						}
 						return;
+					}
+					else {
+						if ( empty( $limited_by_class) ) {
+							if ( defined('WP_DEBUG') && WP_DEBUG ) {
+								error_log( 'limited by class is empty, moving on.' );
+							}
+						}
+						else {
+							if ( defined('WP_DEBUG') && WP_DEBUG ) {
+								error_log( 'limited by class passed its check.' );
+							}
+						}
 					}
 
                     if ( '' === $class_cost_string ) {
@@ -367,6 +396,11 @@ class WC_ASM_Shipping_Method extends WC_Shipping_Method {
                 if ( 'order' === $this->type && $highest_class_cost ) {
                     $rate['cost'] += $highest_class_cost;
                 }
+			}
+
+			if ( defined('WP_DEBUG') && WP_DEBUG ) {
+				error_log( 'has cost: ' . $has_costs );
+				error_log( 'rate[cost]: ' . $rate['cost'] );
 			}
 			
             // Add the rate
