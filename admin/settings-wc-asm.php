@@ -8,6 +8,8 @@ $cost_desc = __( 'Enter a cost (excl. tax) or sum, e.g. <code>10.00 * [qty]</cod
 
 $shipping_classes = WC()->shipping->get_shipping_classes();
 
+$categories = wp_count_terms( 'product_cat' );
+
 if ( ! function_exists( 'wc_asm_day_of_week' ) ) {
 	function wc_asm_day_of_week() {
 		$week = array(
@@ -32,7 +34,7 @@ if ( ! function_exists( 'wc_asm_shipping_classes_array' ) ) {
 			if ( ! isset( $shipping_class->term_id ) ) {
 				continue;
 			}
-			$classes['sc_' . $shipping_class->term_id] = $shipping_class->name;
+			$classes[ 'sc_' . $shipping_class->term_id ] = $shipping_class->name;
 		}
 		return $classes;
 	}
@@ -41,6 +43,30 @@ if ( ! function_exists( 'wc_asm_shipping_classes_array' ) ) {
 if ( ! function_exists( 'wc_asm_get_timestamp' ) ) {
 	function wc_asm_get_timestamp() {
 		return current_time('D h:i:s A');
+	}
+}
+
+if ( ! function_exists( 'wc_asm_product_categories' ) ) {
+	function wc_asm_product_categories() {
+		$args = array(
+			'taxonomy'		=> 'product_cat',
+			'hide_empty'	=> false,
+			'order'			=> 'ASC',
+		);
+		$product_cats = get_terms( $args );
+
+		$categories = array();
+
+		foreach( $product_cats as $cats ) {
+			if ( 0 !== $cats->parent ) {
+				$categories[ 'pc_' . $cats->term_id ] = get_term_by('id', $cats->parent, 'product_cat')->name . ' -> ' . $cats->name;
+			}
+			else {
+				$categories[ 'pc_' . $cats->term_id ] = $cats->name;
+			}
+		}
+
+		return $categories;
 	}
 }
 
@@ -75,12 +101,40 @@ $settings = array(
 	),
 );
 
+if ( ! empty( $categories ) ) {
+
+	$cat_options = wc_asm_product_categories();
+
+	$settings['categories'] = array(
+		'title'			=> __( 'Categories', 'wc-asm' ),
+		'type'			=> 'multiselect',
+		'description'	=> __( 'controls which product categories should determine when this shipping method is available.', 'wc-asm' ),
+		'class'			=> 'multiselect-asm categories',
+		'options'		=> $cat_options,
+	);
+
+	foreach( $cat_options as $key => $value ) {
+		$settings[ $key . '_qty_min' ] = array(
+			'parent_id'		=> 'woocommerce_wc_asm_categories',
+			'type'			=> 'text',
+			'title'			=> $value . ' quantity minimum',
+			'description'	=> '-1, 0 or blank for no minimum.',
+		);
+		$settings[ $key . '_qty_max' ] = array(
+			'parent_id'		=> 'woocommerce_wc_asm_categories',
+			'type'			=> 'text',
+			'title'			=> $value . ' quantity maximum',
+			'description'	=> '-1 or blank for unlimited.',
+		);
+	}
+}
+
 if ( ! empty( $shipping_classes ) ) {
 	$settings['classes'] = array(
         'title'             => __( 'Shipping Class(es)', 'wc-asm' ),
         'type'              => 'multiselect',
         'description'       => __( 'Controls which shipping classes should determine when this shipping method is available. If no class is selected, any shipping class will be valid for any quantity.', 'wc-asm' ),
-        'class'             => 'multiselect-asm',
+        'class'             => 'multiselect-asm classes',
 		'options'			=> wc_asm_shipping_classes_array(),
 	);
 
@@ -154,7 +208,7 @@ if ( ! empty( $shipping_classes ) ) {
 		if ( ! isset( $shipping_class->term_id ) ) {
 			continue;
 		}
-		$settings[ 'class_cost_' . $shipping_class->term_id ] = array(
+		$settings[ 'sc_' . $shipping_class->term_id . '_cost' ] = array(
 			/* translators: %s: shipping class name */
 			'title'       => sprintf( __( '"%s" shipping class cost', 'wc-asm' ), esc_html( $shipping_class->name ) ),
 			'type'        => 'text',
@@ -162,6 +216,7 @@ if ( ! empty( $shipping_classes ) ) {
 			'description' => $cost_desc,
 			'default'     => $this->get_option( 'class_cost_' . $shipping_class->slug ), // Before 2.5.0, we used slug here which caused issues with long setting names
 			'desc_tip'    => true,
+			'class'		  => 'timelimited',
 		);
 	}
 	$settings['no_class_cost'] = array(
@@ -184,4 +239,35 @@ if ( ! empty( $shipping_classes ) ) {
 	);
 }
 
+/*
+if ( ! empty( $categories ) ) {
+	$settings['categories_costs'] = array(
+		'title'			 => __( 'Shipping categories costs', 'wc-asm' ),
+		'type'			 => 'title',
+		'default'        => '',
+		// 'description'    => sprintf( __( 'These costs can optionally be added based on the <a href="%s">product shipping class</a>.', 'wc-asm' ), admin_url( 'admin.php?page=wc-settings&tab=shipping&section=classes' ) ),
+	);
+
+	foreach ( $cat_options as $key => $value ) {
+		$settings[ $key . '_cost' ] = array(
+			// translators: %s: product category name 
+			'title'       => sprintf( __( '"%s" category cost', 'wc-asm' ), esc_html( $value ) ),
+			'type'        => 'text',
+			'placeholder' => __( 'N/A', 'wc-asm' ),
+			'description' => $cost_desc,
+			'default'     => $this->get_option( $key . '_cost' ), // Before 2.5.0, we used slug here which caused issues with long setting names
+			'desc_tip'    => true,
+			'class'		  => 'categorylimited',
+		);
+	}
+	$settings['no_category_cost'] = array(
+		'title'       => __( 'No category cost', 'wc-asm' ),
+		'type'        => 'text',
+		'placeholder' => __( 'N/A', 'wc-asm' ),
+		'description' => $cost_desc,
+		'default'     => '',
+		'desc_tip'    => true,
+	);
+}
+*/
 return $settings;

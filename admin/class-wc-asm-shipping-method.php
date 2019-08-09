@@ -38,6 +38,9 @@ class WC_ASM_Shipping_Method extends WC_Shipping_Method {
 	 */
 	public function init() {
 		$this->instance_form_fields = include( 'settings-wc-asm.php' );
+
+		// use unset($this->instance_form_fields['classes'] etc to remove inputs.
+
 		$this->title                = $this->get_option( 'title' );
 		$this->tax_status           = $this->get_option( 'tax_status' );
 		$this->cost                 = $this->get_option( 'cost' );
@@ -116,6 +119,94 @@ class WC_ASM_Shipping_Method extends WC_Shipping_Method {
 		}
 
 		return $calculated_fee;
+	}
+
+	protected function wc_asm_check_categories( $l_b_c = array(), $package = array() ) {
+		$categories_quantities	= array();
+		foreach ( $l_b_c as $categories ) {
+			$cat_qtys = array(
+				'min'	=> $this->get_option( $categories . '_qty_min' ),
+				'max'	=> $this->get_option( $categories . '_qty_max' ),
+			);
+			$categories_quantities[$categories] = $cat_qtys;
+			error_log( 'category: ' . $categories );
+			error_log( '  min: ' . $cat_qtys['min'] );
+			error_log( '  max: ' . $cat_qtys['max'] );
+			
+		}
+		$cat_ship_qty = array();
+		foreach ( $package['contents'] as $item_id => $values ) {
+			if ( $values['quantity'] > 0 && $values['data']->needs_shipping() ) {
+				$flag = false;
+				if ( ! empty( $values['data']->get_category_ids() ) ) {
+					$prod_qty = $values['quantity'];
+					foreach( $values['data']->get_category_ids() as $cat_id ) {
+						if ( isset( $categories_quantities['pc_' . $cat_id ] ) ) { // . '_qty_min'] ) ) {
+							if ( ! isset( $cat_ship_qty[ 'pc_' . $cat_id ] ) ) {
+								$cat_ship_qty[ 'pc_' . $cat_id ] = 0;
+							}
+							$cat_ship_qty[ 'pc_' . $cat_id ] += $prod_qty;
+							$flag = true;
+							if ( defined('WP_DEBUG') && WP_DEBUG ) {
+								error_log( 'Category found id: ' . $cat_id . '   quantity added: ' . $prod_qty );
+								error_log( 'cat_ship_qty[pc_' . $cat_id . ']');
+								error_log( 'Total quantity for category: ' . $cat_ship_qty['pc_' . $cat_id] );
+							}
+						}
+					}
+					if ( false === $flag ) {
+						if ( defined('WP_DEBUG') && WP_DEBUG ) {
+							error_log( 'Ship method is invalid, category is not in ship method.' );
+						}
+						return $flag;
+					}
+				}
+				else {
+					if ( defined('WP_DEBUG') && WP_DEBUG ) {
+						error_log($values['data']->get_category_ids());
+						error_log( 'Ship method is invalid, no category found but ship method has category limitation.' );
+					}
+					return $flag;
+				}
+			}
+		}
+		// $category will be array( 'pc_##' => array( 'min' => ##, 'max' => ##) ) ;
+		foreach( $categories_quantities as $key => $arr ) {
+			if ( ! isset( $cat_ship_qty[$key] ) && ( ! empty( $arr['min'] ) && 0 < (int)$arr['min'] ) ) {
+				if ( defined('WP_DEBUG') && WP_DEBUG ) {
+					error_log( 'Ship method is invalid, category minimum req not met. There is no products of this category in here.' );
+				}
+			return false;
+			}
+			elseif ( isset( $cat_ship_qty[$key] ) ) {
+				if ( isset( $arr['min'] ) && ! empty( $arr['min'] ) && (int)$cat_ship_qty[$key] < (int)$arr['min'] ) {
+					if ( defined('WP_DEBUG') && WP_DEBUG ) {
+						error_log( 'Ship method is invalid, category minimum req not met.' );
+					}
+					return false;
+				}
+				elseif ( isset( $arr['max'] ) ){
+					if ( 0 === $arr['max'] || '0' === $arr['max'] ) {
+						if ( defined('WP_DEBUG') && WP_DEBUG ) {
+							error_log( 'Ship method is invalid, category max is 0, effectively making this category invalid.' );
+						}
+						return false;
+					}
+					elseif( ! empty( $arr['max'] ) && (int)$cat_ship_qty[$key] > (int)$arr['max'] ) {
+						if ( -1 === (int)$arr['max'] ) {
+							if ( defined('WP_DEBUG') && WP_DEBUG ) {
+								error_log( 'Ship method is valid, max is unlimited.' );
+							}
+							return true;
+						}
+						if ( defined('WP_DEBUG') && WP_DEBUG ) {
+							error_log( 'Ship method is invalid, category max req not met.' );
+						}
+						return false;
+					}
+				}
+			}
+		}
 	}
 
 	protected function wc_asm_first_is_earlier( $first = array(), $second = array() ) {
@@ -310,125 +401,134 @@ class WC_ASM_Shipping_Method extends WC_Shipping_Method {
             'package' => $package,
         );
 
-            // Calculate the costs
-            $has_costs = false; // True when a cost is set. False if all costs are blank strings.
-            $cost      = $this->get_option( 'cost' );
+		// Calculate the costs
+		$has_costs = false; // True when a cost is set. False if all costs are blank strings.
+		$cost      = $this->get_option( 'cost' );
+		
+		$shippable_qty = $this->get_package_item_qty( $package );
+		if ( '' !== $cost ) {
+			$has_costs    = true;
+			$rate['cost'] = $this->evaluate_cost( $cost, array(
+				'qty'  => $shippable_qty,
+				'cost' => $package['contents_cost'],
+			) );
+		}
+		
+		$limited_by_categories	= $this->get_option( 'categories' );
+		if ( ! empty( $limited_by_categories ) ) {
+			$result = $this->wc_asm_check_categories( $limited_by_categories, $package );
+			if ( false === $result ) {
 
-			$shippable_qty = $this->get_package_item_qty( $package );
-            if ( '' !== $cost ) {
-                $has_costs    = true;
-                $rate['cost'] = $this->evaluate_cost( $cost, array(
-                    'qty'  => $shippable_qty,
-                    'cost' => $package['contents_cost'],
-                ) );
-            }
+				return; 
+			}
+		}
 
-            // Add shipping class costs.
-            $shipping_classes = WC()->shipping->get_shipping_classes();
-			
+		// Add shipping class costs.
+		$shipping_classes = WC()->shipping->get_shipping_classes();
+		
 
-            if ( ! empty( $shipping_classes ) ) {
-                $found_shipping_classes = $this->find_shipping_classes( $package );
-				$highest_class_cost     = 0;
-				$limited_by_class		= $this->get_option( 'classes' );
-				$limited_by_time		= $this->get_option( 'toggler' );
-				$class_quantities		= array();
+		if ( ! empty( $shipping_classes ) ) {
+			$found_shipping_classes = $this->find_shipping_classes( $package );
+			$highest_class_cost     = 0;
+			$limited_by_class		= $this->get_option( 'classes' );
+			$limited_by_time		= $this->get_option( 'toggler' );
+			$class_quantities		= array();
 
-				if ( 'yes' === $limited_by_time ) {
-					$result = $this->wc_asm_check_time();
-					if ( $result === false ) {
-						return;
-					}
+			if ( 'yes' === $limited_by_time ) {
+				$result = $this->wc_asm_check_time();
+				if ( $result === false ) {
+					return;
 				}
+			}
 
-				if ( ! empty( $limited_by_class ) ) {
-					foreach ( $limited_by_class as $shipping_class ) {
-						$class_quantities[$shipping_class] = $this->get_option( $shipping_class . '_qty' );
-					}
+			if ( ! empty( $limited_by_class ) ) {
+				foreach ( $limited_by_class as $shipping_class ) {
+					$class_quantities[$shipping_class] = $this->get_option( $shipping_class . '_qty' );
 				}
+			}
 
-                foreach ( $found_shipping_classes as $shipping_class => $products ) {
-                    // Also handles BW compatibility when slugs were used instead of ids
-                    $shipping_class_term = get_term_by( 'slug', $shipping_class, 'product_shipping_class' );
-                    $class_cost_string   = $shipping_class_term && $shipping_class_term->term_id ? $this->get_option( 'class_cost_' . $shipping_class_term->term_id, $this->get_option( 'class_cost_' . $shipping_class, '' ) ) : $this->get_option( 'no_class_cost', '' );
-					$class_qty			 = array_sum( wp_list_pluck( $products, 'quantity' ) );
-					$class_cost			 = array_sum( wp_list_pluck( $products, 'line_total' ) );
+			foreach ( $found_shipping_classes as $shipping_class => $products ) {
+				// Also handles BW compatibility when slugs were used instead of ids
+				$shipping_class_term = get_term_by( 'slug', $shipping_class, 'product_shipping_class' );
+				$class_cost_string   = $shipping_class_term && $shipping_class_term->term_id ? $this->get_option( 'class_cost_' . $shipping_class_term->term_id, $this->get_option( 'class_cost_' . $shipping_class, '' ) ) : $this->get_option( 'no_class_cost', '' );
+				$class_qty			 = array_sum( wp_list_pluck( $products, 'quantity' ) );
+				$class_cost			 = array_sum( wp_list_pluck( $products, 'line_total' ) );
 
-					error_log( 'we are here now' );
-					if ( ! empty( $limited_by_class ) && ( -1 !== (int)$class_quantities['sc_' . $shipping_class_term->term_id] && (int)$class_qty > (int)$class_quantities['sc_' . $shipping_class_term->term_id] ) ) {
+
+				if ( ! empty( $limited_by_class ) && ( -1 !== (int)$class_quantities['sc_' . $shipping_class_term->term_id] && (int)$class_qty > (int)$class_quantities['sc_' . $shipping_class_term->term_id] ) ) {
+					if ( defined('WP_DEBUG') && WP_DEBUG ) {
+						$arr = array( 'limited' => $limited_by_class, 'class_qts[]' => $class_quantities['sc_' . $shipping_class_term->term_id], 'class_qty' => $class_qty, 'class' => 'sc_' . $shipping_class_term->term_id );
+						error_log( $arr );
+						error_log( 'advanced shipping not available for cart due to quantity limits.');
+					}
+					return;
+				}
+				else {
+					if ( empty( $limited_by_class) ) {
 						if ( defined('WP_DEBUG') && WP_DEBUG ) {
-							$arr = array( 'limited' => $limited_by_class, 'class_qts[]' => $class_quantities['sc_' . $shipping_class_term->term_id], 'class_qty' => $class_qty, 'class' => 'sc_' . $shipping_class_term->term_id );
-							error_log( $arr );
-							error_log( 'advanced shipping not available for cart due to quantity limits.');
+							error_log( 'limited by class is empty, moving on.' );
 						}
-						return;
 					}
 					else {
-						if ( empty( $limited_by_class) ) {
-							if ( defined('WP_DEBUG') && WP_DEBUG ) {
-								error_log( 'limited by class is empty, moving on.' );
-							}
-						}
-						else {
-							if ( defined('WP_DEBUG') && WP_DEBUG ) {
-								error_log( 'limited by class passed its check.' );
-							}
+						if ( defined('WP_DEBUG') && WP_DEBUG ) {
+							error_log( 'limited by class passed its check.' );
 						}
 					}
+				}
 
-                    if ( '' === $class_cost_string ) {
-                        continue;
-                    }
+				if ( '' === $class_cost_string ) {
+					continue;
+				}
 
-                    $has_costs  = true;
-                    $class_cost = $this->evaluate_cost( $class_cost_string, array(
-                        'qty'  => $class_qty,
-                        'cost' => $class_cost,
-                    ) );
+				$has_costs  = true;
+				$class_cost = $this->evaluate_cost( $class_cost_string, array(
+					'qty'  => $class_qty,
+					'cost' => $class_cost,
+				) );
 
-                    if ( 'class' === $this->type ) {
-                        $rate['cost'] += $class_cost;
-                    } else {
-                        $highest_class_cost = $class_cost > $highest_class_cost ? $class_cost : $highest_class_cost;
-                    }
-                }
-
-                if ( 'order' === $this->type && $highest_class_cost ) {
-                    $rate['cost'] += $highest_class_cost;
-                }
+				if ( 'class' === $this->type ) {
+					$rate['cost'] += $class_cost;
+				} else {
+					$highest_class_cost = $class_cost > $highest_class_cost ? $class_cost : $highest_class_cost;
+				}
 			}
 
-			if ( defined('WP_DEBUG') && WP_DEBUG ) {
-				error_log( 'has cost: ' . $has_costs );
-				error_log( 'rate[cost]: ' . $rate['cost'] );
+			if ( 'order' === $this->type && $highest_class_cost ) {
+				$rate['cost'] += $highest_class_cost;
 			}
-			
-            // Add the rate
-            if ( $has_costs ) {
-                $this->add_rate( $rate );
-            }
+		}
 
-            /**
-             * Developers can add additional flat rates based on this one via this action since @version 2.4.
-             *
-             * Previously there were (overly complex) options to add additional rates however this was not user.
-             * friendly and goes against what Flat Rate Shipping was originally intended for.
-             *
-             * This example shows how you can add an extra rate based on this flat rate via custom function:
-             *
-             * 		add_action( 'woocommerce_flat_rate_shipping_add_rate', 'add_another_custom_flat_rate', 10, 2 );
-             *
-             * 		function add_another_custom_flat_rate( $method, $rate ) {
-             * 			$new_rate          = $rate;
-             * 			$new_rate['id']    .= ':' . 'custom_rate_name'; // Append a custom ID.
-             * 			$new_rate['label'] = 'Rushed Shipping'; // Rename to 'Rushed Shipping'.
-             * 			$new_rate['cost']  += 2; // Add $2 to the cost.
-             *
-             * 			// Add it to WC.
-             * 			$method->add_rate( $new_rate );
-             * 		}.
-             */
-            do_action( 'woocommerce_' . $this->id . '_shipping_add_rate', $this, $rate );
+		if ( defined('WP_DEBUG') && WP_DEBUG ) {
+			error_log( 'has cost: ' . $has_costs );
+			error_log( 'rate[cost]: ' . $rate['cost'] );
+		}
+		
+		// Add the rate
+		if ( $has_costs ) {
+			$this->add_rate( $rate );
+		}
+
+		/**
+		 * Developers can add additional flat rates based on this one via this action since @version 2.4.
+		 *
+		 * Previously there were (overly complex) options to add additional rates however this was not user.
+		 * friendly and goes against what Flat Rate Shipping was originally intended for.
+		 *
+		 * This example shows how you can add an extra rate based on this flat rate via custom function:
+		 *
+		 * 		add_action( 'woocommerce_flat_rate_shipping_add_rate', 'add_another_custom_flat_rate', 10, 2 );
+		 *
+		 * 		function add_another_custom_flat_rate( $method, $rate ) {
+		 * 			$new_rate          = $rate;
+		 * 			$new_rate['id']    .= ':' . 'custom_rate_name'; // Append a custom ID.
+		 * 			$new_rate['label'] = 'Rushed Shipping'; // Rename to 'Rushed Shipping'.
+		 * 			$new_rate['cost']  += 2; // Add $2 to the cost.
+		 *
+		 * 			// Add it to WC.
+		 * 			$method->add_rate( $new_rate );
+		 * 		}.
+		 */
+		do_action( 'woocommerce_' . $this->id . '_shipping_add_rate', $this, $rate );
 
     }
 
