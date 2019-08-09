@@ -39,17 +39,8 @@ if ( ! function_exists( 'wc_asm_shipping_classes_array' ) ) {
 }
 
 if ( ! function_exists( 'wc_asm_get_timestamp' ) ) {
-	function wc_asm_get_timestamp( $arg = 0 ) {
-		// $wc_date = new WC_DateTime();
-		// $wc_date->setTimezone(get_option('gmt_offset'));
-		// if( $arg ) {
-			return current_time('D h:i:s A');
-			// return $wc_date->date_i18n('D H:i:s A');
-		// }
-		// elseif ( $arg === 2 ) {
-			// return get_option('gmt_offset');
-			// return $wc_date->getTimezone()->getName();
-		// }
+	function wc_asm_get_timestamp() {
+		return current_time('D h:i:s A');
 	}
 }
 
@@ -84,7 +75,8 @@ $settings = array(
 	),
 );
 
-$settings['classes'] = array(
+if ( ! empty( $shipping_classes ) ) {
+	$settings['classes'] = array(
         'title'             => __( 'Shipping Class(es)', 'wc-asm' ),
         'type'              => 'multiselect',
         'description'       => __( 'Controls which shipping classes should determine when this shipping method is available. If no class is selected, any shipping class will be valid for any quantity.', 'wc-asm' ),
@@ -92,7 +84,6 @@ $settings['classes'] = array(
 		'options'			=> wc_asm_shipping_classes_array(),
 	);
 
-if ( ! empty( $shipping_classes ) ) {
 	foreach( $shipping_classes as $shipping_class ) {
 		if ( ! isset( $shipping_class->term_id ) ) {
 			continue;
@@ -104,6 +95,15 @@ if ( ! empty( $shipping_classes ) ) {
 			'description'	=> '-1 for unlimited.',
 		);
 	}
+}
+else {
+	$settings['classes'] = array(
+        'title'             => __( 'Shipping Class(es)', 'wc-asm' ),
+		'type'              => 'text',
+		'disabled'			=> true,
+		'placeholder'		=> __( 'Define shipping classes to use this feature!', 'wc-asm' ),
+        'description'       => __( 'Controls which shipping classes should determine when this shipping method is available. If no class is selected, any shipping class will be valid for any quantity.', 'wc-asm' ),
+	);
 }
 
 $settings = array_merge( $settings, array(

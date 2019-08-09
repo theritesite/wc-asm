@@ -45,7 +45,6 @@
 			else {
 				$el.addClass('hidden');
 			}
-			// $el.css("display", arr[opt] === 1 ? '' : 'none' );
 		});
 	};
 
