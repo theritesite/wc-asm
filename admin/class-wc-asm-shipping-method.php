@@ -135,6 +135,8 @@ class WC_ASM_Shipping_Method extends WC_Shipping_Method {
 			
 		}
 		$cat_ship_qty = array();
+		error_log(' from aqui' );
+		// wp_die(print_r($package));
 		foreach ( $package['contents'] as $item_id => $values ) {
 			if ( $values['quantity'] > 0 && $values['data']->needs_shipping() ) {
 				$flag = false;
@@ -154,11 +156,31 @@ class WC_ASM_Shipping_Method extends WC_Shipping_Method {
 							}
 						}
 					}
+					
 					if ( false === $flag ) {
 						if ( defined('WP_DEBUG') && WP_DEBUG ) {
 							error_log( 'Ship method is invalid, category is not in ship method.' );
 						}
 						return $flag;
+					}
+				}
+				elseif ( 0 !== ( $parent = $values['data']->get_parent_id() ) ) {
+					$prod_qty = $values['quantity'];
+					$parent = wc_get_product( $values['data']->get_parent_id() );
+					foreach( $parent->get_category_ids() as $cat_id ) {
+						if ( isset( $categories_quantities['pc_' . $cat_id ] ) ) { // . '_qty_min'] ) ) {
+							if ( ! isset( $cat_ship_qty[ 'pc_' . $cat_id ] ) ) {
+								$cat_ship_qty[ 'pc_' . $cat_id ] = 0;
+							}
+							$cat_ship_qty[ 'pc_' . $cat_id ] += $prod_qty;
+							$flag = true;
+							if ( defined('WP_DEBUG') && WP_DEBUG ) {
+								error_log( 'Checking parent product since variations have category issues' );
+								error_log( 'Category found id: ' . $cat_id . '   quantity added: ' . $prod_qty );
+								error_log( 'cat_ship_qty[pc_' . $cat_id . ']');
+								error_log( 'Total quantity for category: ' . $cat_ship_qty['pc_' . $cat_id] );
+							}
+						}
 					}
 				}
 				else {
