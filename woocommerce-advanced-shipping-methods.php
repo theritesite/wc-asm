@@ -7,7 +7,7 @@
  * that starts the plugin.
  *
  * @link              https://www.theritesites.com
- * @since             1.0.0
+ * @since             1.0.1
  * @package           WC_ASM
  *
  * @wordpress-plugin
@@ -31,7 +31,7 @@ if ( ! defined( 'WPINC' ) ) {
 /**
  * Current plugin version.
  */
-define( 'WC_ASM_VERSION', '1.0.0' );
+define( 'WC_ASM_VERSION', '1.0.1' );
 
 define( 'WC_ASM_UPDATER_URL', 'https://www.theritesites.com' );
 

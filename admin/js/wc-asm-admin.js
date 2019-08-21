@@ -1,37 +1,37 @@
 (function( $ ) {
 
 	$( document ).ready(function() {
-		$('input.timepicker.input-text.regular-input').timepicker({ dropdown: true, scrollbar: true });
-		$('input#woocommerce_wc_asm_toggler').trigger('checkTimeLimited');
-		$('select#woocommerce_wc_asm_classes').trigger('checkClasses');
-		$('select#woocommerce_wc_asm_categories').trigger('checkCategories');
+		$( 'input.timepicker.input-text.regular-input' ).timepicker({ dropdown: true, scrollbar: true });
+		$( 'input#woocommerce_wc_asm_toggler' ).trigger( 'checkTimeLimited' );
+		$( 'select#woocommerce_wc_asm_classes' ).trigger( 'checkClasses' );
+		$( 'select#woocommerce_wc_asm_categories' ).trigger( 'checkCategories' );
 	});
 
-	$( document ).on( 'change', 'select#woocommerce_wc_asm_classes', function(e) {$(this).trigger('checkClasses');})
-					  .on( 'change', 'input#woocommerce_wc_asm_toggler', function(e){$(this).trigger('checkTimeLimited')})
-					  .on( 'change', 'select#woocommerce_wc_asm_categories', function(e) {$(this).trigger('checkCategories');});
+	$( document ).on( 'change', 'select#woocommerce_wc_asm_classes', function(e) {$( this ).trigger( 'checkClasses' );})
+					  .on( 'change', 'input#woocommerce_wc_asm_toggler', function(e){$( this ).trigger( 'checkTimeLimited' )})
+					  .on( 'change', 'select#woocommerce_wc_asm_categories', function(e) {$( this ).trigger( 'checkCategories' );});
 
 	var displayCatQtyFields = function( arr ) {
 		if ( shippingZoneMethods2LocalizeScript.debug === true ) {
 			console.log( 'in displayCatQtyFields' );
 			console.log( arr );
 		}
-		Object.keys(arr).forEach( function(opt) {
+		Object.keys( arr ).forEach( function(opt) {
 			if ( shippingZoneMethods2LocalizeScript.debug === true ) {
-				console.log(opt);
+				console.log( opt );
 			}
 			var $el  = $( '#woocommerce_wc_asm_' + opt + '_qty_min' ).closest( 'tr' );
 			var $el2 = $( '#woocommerce_wc_asm_' + opt + '_qty_max' ).closest( 'tr' );
 			var $el3 = $( '#woocommerce_wc_asm_' + opt + '_cost' ).closest( 'tr' );
 			if ( arr[opt] === 1 ) {
-				$el.removeClass('hidden');
-				$el2.removeClass('hidden');
-				$el3.removeClass('hidden');
+				$el.removeClass( 'hidden' );
+				$el2.removeClass( 'hidden' );
+				$el3.removeClass( 'hidden' );
 			}
 			else {
-				$el.addClass('hidden');
-				$el2.addClass('hidden');
-				$el3.addClass('hidden');
+				$el.addClass( 'hidden' );
+				$el2.addClass( 'hidden' );
+				$el3.addClass( 'hidden' );
 			}
 		});
 	};
@@ -42,7 +42,7 @@
 		var selected = set_arr = [];
 		var flag, values;
 
-		Object.keys( options ).forEach( function(opt) {
+		Object.keys( options ).forEach( function( opt ) {
 			selected.push( options[opt].value );
 		});
 
@@ -52,7 +52,7 @@
 
 		values.forEach( function(e) {
 			flag = -1;
-			if ( $.inArray(e, selected) !== -1 ) {
+			if ( $.inArray( e, selected ) !== -1 ) {
 				flag = 1;
 			}
 			set_arr[e] = flag;
@@ -74,18 +74,18 @@
 			console.log( 'in displayTimeFields' );
 		}
 
-		var $el = $('.timelimited').closest('tr');
+		var $el = $( '.timelimited' ).closest( 'tr' );
 		if ( arg === 1 ) {
-			$el.removeClass('hidden');
+			$el.removeClass( 'hidden' );
 		}
 		else {
-			$el.addClass('hidden');
+			$el.addClass( 'hidden' );
 		}
 	}
 
 	$( document ).on( 'checkTimeLimited', 'input#woocommerce_wc_asm_toggler', function(e) {
-		console.log($(this).prop('checked'));
-		displayTimeFields( $(this).prop('checked') === true ? 1 : 0 );
+		console.log( $( this ).prop( 'checked' ) );
+		displayTimeFields( $( this ).prop( 'checked' ) === true ? 1 : 0 );
 	});
 
 	var displayClassQtyFields = function( arr ) {
@@ -93,19 +93,19 @@
 			console.log( 'in displayClassQtyFields' );
 			console.log( arr );
 		}
-		Object.keys(arr).forEach( function(opt) {
+		Object.keys( arr ).forEach( function( opt ) {
 			if ( shippingZoneMethods2LocalizeScript.debug === true ) {
 				console.log(opt);
 			}
 			var $el  = $( '#woocommerce_wc_asm_' + opt + '_qty' ).closest( 'tr' );
 			var $el2 = $( '#woocommerce_wc_asm_' + opt + '_cost' ).closest( 'tr' );
 			if ( arr[opt] === 1 ) {
-				$el.removeClass('hidden');
-				$el2.removeClass('hidden');
+				$el.removeClass( 'hidden' );
+				$el2.removeClass( 'hidden' );
 			}
 			else {
-				$el.addClass('hidden');
-				$el2.addClass('hidden');
+				$el.addClass( 'hidden' );
+				$el2.addClass( 'hidden' );
 			}
 		});
 	};
@@ -116,7 +116,7 @@
 		var selected = set_arr = [];
 		var flag, values;
 
-		Object.keys( options ).forEach( function(opt) {
+		Object.keys( options ).forEach( function( opt ) {
 			selected.push( options[opt].value );
 		});
 
@@ -126,7 +126,7 @@
 
 		values.forEach( function(e) {
 			flag = -1;
-			if ( $.inArray(e, selected) !== -1 ) {
+			if ( $.inArray( e, selected ) !== -1 ) {
 				flag = 1;
 			}
 			set_arr[e] = flag;
