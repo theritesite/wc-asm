@@ -7,14 +7,14 @@
  * that starts the plugin.
  *
  * @link              https://www.theritesites.com
- * @since             1.0.1
+ * @since             1.0.0
  * @package           WC_ASM
  *
  * @wordpress-plugin
  * Plugin Name:       WooCommerce Advanced Shipping Methods
  * Plugin URI:        https://www.theritesites.com/plugins/woocommerce-advanced-shipping-methods
  * Description:       When your shipping methods dont quite fit your work routines!
- * Version:           1.0.0
+ * Version:           0.1.1
  * Author:            TheRiteSites
  * Author URI:        https://www.theritesites.com
  * License:           GPL-2.0+
@@ -31,7 +31,7 @@ if ( ! defined( 'WPINC' ) ) {
 /**
  * Current plugin version.
  */
-define( 'WC_ASM_VERSION', '1.0.1' );
+define( 'WC_ASM_VERSION', '0.1.1' );
 
 define( 'WC_ASM_UPDATER_URL', 'https://www.theritesites.com' );
 
