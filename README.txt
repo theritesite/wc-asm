@@ -3,7 +3,7 @@ Contributors: theritesites
 Donate link: https://www.theritesites.com
 Tags: 
 Requires at least: 4.0
-Tested up to: 4.9.8
+Tested up to: 5.2
 Stable tag: trunk
 License: GPLv2
 License URI: http://www.gnu.org/licenses/gpl-2.0.html

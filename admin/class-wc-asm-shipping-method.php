@@ -129,13 +129,14 @@ class WC_ASM_Shipping_Method extends WC_Shipping_Method {
 				'max'	=> $this->get_option( $categories . '_qty_max' ),
 			);
 			$categories_quantities[$categories] = $cat_qtys;
-			error_log( 'category: ' . $categories );
-			error_log( '  min: ' . $cat_qtys['min'] );
-			error_log( '  max: ' . $cat_qtys['max'] );
+			if ( defined('WP_DEBUG') && WP_DEBUG ) {
+				error_log( 'category: ' . $categories );
+				error_log( '  min: ' . $cat_qtys['min'] );
+				error_log( '  max: ' . $cat_qtys['max'] );
+			}
 			
 		}
 		$cat_ship_qty = array();
-		error_log(' from aqui' );
 		// wp_die(print_r($package));
 		foreach ( $package['contents'] as $item_id => $values ) {
 			if ( $values['quantity'] > 0 && $values['data']->needs_shipping() ) {
@@ -181,6 +182,13 @@ class WC_ASM_Shipping_Method extends WC_Shipping_Method {
 								error_log( 'Total quantity for category: ' . $cat_ship_qty['pc_' . $cat_id] );
 							}
 						}
+					}
+
+					if ( false === $flag ) {
+						if ( defined('WP_DEBUG') && WP_DEBUG ) {
+							error_log( 'Ship method is invalid, category is not in ship method.' );
+						}
+						return $flag;
 					}
 				}
 				else {
