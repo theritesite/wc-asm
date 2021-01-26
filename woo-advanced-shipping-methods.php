@@ -1,18 +1,13 @@
 <?php
 
 /**
- * This file is read by WordPress to generate the plugin information in the plugin
- * admin area. This file also includes all of the dependencies used by the plugin,
- * registers the activation and deactivation functions, and defines a function
- * that starts the plugin.
- *
  * @link              https://www.theritesites.com
  * @since             1.0.0
  * @package           WC_ASM
  *
  * @wordpress-plugin
- * Plugin Name:       WooCommerce Advanced Shipping Methods
- * Plugin URI:        https://www.theritesites.com/plugins/woocommerce-advanced-shipping-methods
+ * Plugin Name:       Woo Advanced Shipping Methods
+ * Plugin URI:        https://www.theritesites.com/plugins/
  * Description:       When your shipping methods dont quite fit your work routines! Restrict by time, shipping class, category, or quantity.
  * Version:           1.0.0
  * Author:            TheRiteSites

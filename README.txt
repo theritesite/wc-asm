@@ -1,4 +1,4 @@
-=== Plugin Name ===
+=== Woo Advanced Shipping Methods ===
 Contributors: theritesites
 Donate link: https://www.theritesites.com
 Tags: woocommerce shipping methods, time based shipping, advanced shipping
