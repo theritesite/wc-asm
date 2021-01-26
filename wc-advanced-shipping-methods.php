@@ -6,7 +6,7 @@
  * @package           WC_ASM
  *
  * @wordpress-plugin
- * Plugin Name:       Woo Advanced Shipping Methods
+ * Plugin Name:       WC Advanced Shipping Methods
  * Plugin URI:        https://www.theritesites.com/plugins/
  * Description:       When your shipping methods dont quite fit your work routines! Restrict by time, shipping class, category, or quantity.
  * Version:           1.0.0
