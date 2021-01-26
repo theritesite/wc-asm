@@ -43,7 +43,6 @@ const config = env => {
                     { from: path.resolve( __dirname, 'admin' ) + '/**', to: buildFolder },
                     { from: path.resolve( __dirname, 'includes' ) + '/**', to: buildFolder },
                     { from: path.resolve( __dirname, 'languages' ) + '/**', to: buildFolder },
-                    { from: path.resolve( __dirname, 'public' ) + '/**', to: buildFolder },
                     { from: path.resolve( __dirname, 'README.*' ), to: buildFolder },
                     { from: path.resolve( __dirname, 'woo-includes' ) + '/**', to: buildFolder },
                     { from: path.resolve( __dirname, 'LICENSE.txt' ), to: buildFolder },
@@ -53,7 +52,6 @@ const config = env => {
                     { from: path.resolve( __dirname, 'admin' ) + '/**', to: endFolder },
                     { from: path.resolve( __dirname, 'includes' ) + '/**', to: endFolder },
                     { from: path.resolve( __dirname, 'languages' ) + '/**', to: endFolder },
-                    { from: path.resolve( __dirname, 'public' ) + '/**', to: endFolder },
                     { from: path.resolve( __dirname, 'README.*' ), to: endFolder },
                     { from: path.resolve( __dirname, 'woo-includes' ) + '/**', to: endFolder },
                     { from: path.resolve( __dirname, 'LICENSE.txt' ), to: endFolder },
@@ -95,7 +93,6 @@ const config = env => {
                     { from: path.resolve( __dirname, 'admin' ) + '/**', to: devFolder },
                     { from: path.resolve( __dirname, 'includes' ) + '/**', to: devFolder },
                     { from: path.resolve( __dirname, 'languages' ) + '/**', to: devFolder },
-                    { from: path.resolve( __dirname, 'public' ) + '/**', to: devFolder },
                     { from: path.resolve( __dirname, 'README.*' ), to: devFolder },
                     { from: path.resolve( __dirname, 'woo-includes' ) + '/**', to: devFolder },
                     { from: path.resolve( __dirname, 'LICENSE.txt' ), to: devFolder },
@@ -108,11 +105,10 @@ const config = env => {
 
     return {
         entry: {
-            "admin/js/admin-" : path.resolve(__dirname, 'src', 'admin.js')
+            "admin" : path.resolve(__dirname, 'src', 'admin.js')
         },
         output: {
-            publicPath: '/',
-            filename: '[name]' + pluginSlug + '.js',
+            filename: './dist/' + pluginSlug + '.js',
             path: __dirname,
         },
 		optimization: {

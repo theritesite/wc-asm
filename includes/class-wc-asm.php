@@ -77,7 +77,6 @@ class WC_ASM {
 		$this->load_dependencies();
 		$this->set_locale();
 		$this->define_admin_hooks();
-		$this->define_public_hooks();
 
 	}
 
@@ -115,12 +114,6 @@ class WC_ASM {
 		 * The class responsible for defining all actions that occur in the admin area.
 		 */
 		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'admin/class-wc-asm-admin.php';
-
-		/**
-		 * The class responsible for defining all actions that occur in the public-facing
-		 * side of the site.
-		 */
-		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'public/class-wc-asm-public.php';
 
 		$this->loader = new WC_ASM_Loader();
 
@@ -160,22 +153,6 @@ class WC_ASM {
 		// $this->loader->add_filter( 'woocommerce_form_field_toggler', $plugin_admin, 'wc_asm_toggler_handler', 10, 4 );
 
 		$this->loader->add_filter( 'woocommerce_init', $plugin_admin, 'init_wc_hooks' );
-
-	}
-
-	/**
-	 * Register all of the hooks related to the public-facing functionality
-	 * of the plugin.
-	 *
-	 * @since    1.0.0
-	 * @access   private
-	 */
-	private function define_public_hooks() {
-
-		$plugin_public = new WC_ASM_Public( $this->get_plugin_name(), $this->get_version() );
-
-		$this->loader->add_action( 'wp_enqueue_scripts', $plugin_public, 'enqueue_styles' );
-		$this->loader->add_action( 'wp_enqueue_scripts', $plugin_public, 'enqueue_scripts' );
 
 	}
 

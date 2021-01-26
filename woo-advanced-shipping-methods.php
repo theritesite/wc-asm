@@ -13,8 +13,8 @@
  * @wordpress-plugin
  * Plugin Name:       WooCommerce Advanced Shipping Methods
  * Plugin URI:        https://www.theritesites.com/plugins/woocommerce-advanced-shipping-methods
- * Description:       When your shipping methods dont quite fit your work routines!
- * Version:           0.1.1
+ * Description:       When your shipping methods dont quite fit your work routines! Restrict by time, shipping class, category, or quantity.
+ * Version:           1.0.0
  * Author:            TheRiteSites
  * Author URI:        https://www.theritesites.com
  * License:           GPL-2.0+
@@ -31,32 +31,11 @@ if ( ! defined( 'WPINC' ) ) {
 /**
  * Current plugin version.
  */
-define( 'WC_ASM_VERSION', '0.1.1' );
+define( 'WC_ASM_VERSION', '1.0.0' );
 
 if ( ! function_exists( 'is_woocommerce_active' ) ) {
 	require_once( 'woo-includes/woo-functions.php' );
 }
-
-/**
- * The code that runs during plugin activation.
- * This action is documented in includes/class-wc-asm-activator.php
- */
-// function activate_wc_asm() {
-// 	require_once plugin_dir_path( __FILE__ ) . 'includes/class-wc-asm-activator.php';
-// 	WC_ASM_Activator::activate();
-// }
-
-/**
- * The code that runs during plugin deactivation.
- * This action is documented in includes/class-wc-asm-deactivator.php
- */
-// function deactivate_wc_asm() {
-// 	require_once plugin_dir_path( __FILE__ ) . 'includes/class-wc-asm-deactivator.php';
-// 	WC_ASM_Deactivator::deactivate();
-// }
-
-// register_activation_hook( __FILE__, 'activate_wc_asm' );
-// register_deactivation_hook( __FILE__, 'deactivate_wc_asm' );
 
 /**
  * The core plugin class that is used to define internationalization,
