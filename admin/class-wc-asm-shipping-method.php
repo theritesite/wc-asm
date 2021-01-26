@@ -448,28 +448,27 @@ class WC_ASM_Shipping_Method extends WC_Shipping_Method {
 		if ( ! empty( $limited_by_categories ) ) {
 			$result = $this->wc_asm_check_categories( $limited_by_categories, $package );
 			if ( false === $result ) {
-
 				return; 
+			}
+		}
+
+		$limited_by_time = $this->get_option( 'toggler' );
+
+		if ( 'yes' === $limited_by_time ) {
+			$result = $this->wc_asm_check_time();
+			if ( $result === false ) {
+				return;
 			}
 		}
 
 		// Add shipping class costs.
 		$shipping_classes = WC()->shipping->get_shipping_classes();
 		
-
 		if ( ! empty( $shipping_classes ) ) {
 			$found_shipping_classes = $this->find_shipping_classes( $package );
 			$highest_class_cost     = 0;
 			$limited_by_class		= $this->get_option( 'classes' );
-			$limited_by_time		= $this->get_option( 'toggler' );
 			$class_quantities		= array();
-
-			if ( 'yes' === $limited_by_time ) {
-				$result = $this->wc_asm_check_time();
-				if ( $result === false ) {
-					return;
-				}
-			}
 
 			if ( ! empty( $limited_by_class ) ) {
 				foreach ( $limited_by_class as $shipping_class ) {

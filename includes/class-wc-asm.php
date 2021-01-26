@@ -49,15 +49,6 @@ class WC_ASM {
 	protected $plugin_name;
 
 	/**
-	 * The reference to the settings class for the plugin
-	 * 
-	 * @since 	1.0.0
-	 * @access	protected
-	 * @var		class	$plugin_settings
-	 */
-	protected $plugin_settings;
-
-	/**
 	 * The current version of the plugin.
 	 *
 	 * @since    1.0.0
@@ -121,12 +112,6 @@ class WC_ASM {
 		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'includes/class-wc-asm-i18n.php';
 
 		/**
-		 * The class responsible for defining settings menu functionality
-		 * of the plugin.
-		 */
-		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'includes/class-wc-asm-settings.php';
-
-		/**
 		 * The class responsible for defining all actions that occur in the admin area.
 		 */
 		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'admin/class-wc-asm-admin.php';
@@ -176,7 +161,6 @@ class WC_ASM {
 
 		$this->loader->add_filter( 'woocommerce_init', $plugin_admin, 'init_wc_hooks' );
 
-		$this->plugin_settings = new WC_ASM_Settings( $this );
 	}
 
 	/**

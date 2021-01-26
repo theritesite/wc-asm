@@ -6,7 +6,7 @@ const OptimizeCSSAssetsPlugin = require("optimize-css-assets-webpack-plugin");
 const UglifyJsPlugin = require("uglifyjs-webpack-plugin");
 const MiniCSSExtractPlugin = require('mini-css-extract-plugin');
 
-const pluginSlug = 'woocommerce-advanced-shipping-methods';
+const pluginSlug = 'woo-advanced-shipping-methods';
 
 const buildFolder = path.resolve( __dirname, pluginSlug );
 // const vendorFolder = path.resolve( buildFolder, 'vendor' );
@@ -19,6 +19,12 @@ const config = env => {
     const pluginList = [];
     console.log(env.NODE_ENV);
 
+
+	if ( env.LOC === "m1" ) {
+		devFolder = '/Users/parkermathewson/mac-sites/wp56tester/wp-content/plugins/' + pluginSlug; // M1
+		endPath = '/Users/parkermathewson/Library/Mobile\ Documents/com~apple~CloudDocs/theritesites/completed_pluginsv2'; // M1
+		buildPath = '/Users/parkermathewson/theritesites/completed_pluginsv2'; // M1
+	}
     if ( env.LOC === "corsair" ) {
         devFolder = '/var/www/wpdev.com/public_html/wp-content/plugins/' + pluginSlug; // Corsair
         endPath = '/home/parkerm34/Documents/theritesites/completed_plugins'; // Corsair
@@ -33,30 +39,27 @@ const config = env => {
 
     if( env.NODE_ENV === 'production' ) {
         pluginList.push(
-            new CopyWebpackPlugin( [
+            new CopyWebpackPlugin( { patterns: [
                     { from: path.resolve( __dirname, 'admin' ) + '/**', to: buildFolder },
-                    { from: path.resolve( __dirname, 'cmb2' ) + '/**', to: buildFolder },
                     { from: path.resolve( __dirname, 'includes' ) + '/**', to: buildFolder },
                     { from: path.resolve( __dirname, 'languages' ) + '/**', to: buildFolder },
                     { from: path.resolve( __dirname, 'public' ) + '/**', to: buildFolder },
                     { from: path.resolve( __dirname, 'README.*' ), to: buildFolder },
                     { from: path.resolve( __dirname, 'woo-includes' ) + '/**', to: buildFolder },
                     { from: path.resolve( __dirname, 'LICENSE.txt' ), to: buildFolder },
-                    { from: path.resolve( __dirname, 'CHANGELOG.*' ), to: buildFolder },
+                    // { from: path.resolve( __dirname, 'CHANGELOG.*' ), to: buildFolder },
                     { from: path.resolve( __dirname, '*.php' ), to: buildFolder },
                     /** Above is for zip folder. Below is for repositories. **/
                     { from: path.resolve( __dirname, 'admin' ) + '/**', to: endFolder },
-                    { from: path.resolve( __dirname, 'cmb2' ) + '/**', to: endFolder },
                     { from: path.resolve( __dirname, 'includes' ) + '/**', to: endFolder },
                     { from: path.resolve( __dirname, 'languages' ) + '/**', to: endFolder },
                     { from: path.resolve( __dirname, 'public' ) + '/**', to: endFolder },
                     { from: path.resolve( __dirname, 'README.*' ), to: endFolder },
                     { from: path.resolve( __dirname, 'woo-includes' ) + '/**', to: endFolder },
                     { from: path.resolve( __dirname, 'LICENSE.txt' ), to: endFolder },
-                    { from: path.resolve( __dirname, 'CHANGELOG.*' ), to: endFolder },
+                    // { from: path.resolve( __dirname, 'CHANGELOG.*' ), to: endFolder },
                     { from: path.resolve( __dirname, '*.php' ), to: endFolder },
-                ], {
-                copyUnmodified: true
+                ]
             } ),
 			new MiniCSSExtractPlugin({
 				filename: "/public/css/" + pluginSlug + ".min.css",
@@ -64,7 +67,7 @@ const config = env => {
 			  }),
             new WebpackZipPlugin({
                 initialFile: pluginSlug,
-                endPath: endPath,
+                endPath: buildPath,
                 zipName: pluginSlug + '.zip'
             } )
         );
@@ -87,26 +90,24 @@ const config = env => {
                 ],
                 reloadDelay: 0
             }),
-            new CopyWebpackPlugin( [
+            new CopyWebpackPlugin( {
+                patterns: [
                     { from: path.resolve( __dirname, 'admin' ) + '/**', to: devFolder },
-                    { from: path.resolve( __dirname, 'cmb2' ) + '/**', to: devFolder },
                     { from: path.resolve( __dirname, 'includes' ) + '/**', to: devFolder },
                     { from: path.resolve( __dirname, 'languages' ) + '/**', to: devFolder },
                     { from: path.resolve( __dirname, 'public' ) + '/**', to: devFolder },
                     { from: path.resolve( __dirname, 'README.*' ), to: devFolder },
                     { from: path.resolve( __dirname, 'woo-includes' ) + '/**', to: devFolder },
                     { from: path.resolve( __dirname, 'LICENSE.txt' ), to: devFolder },
-                    { from: path.resolve( __dirname, 'CHANGELOG.*' ), to: devFolder },
+                    // { from: path.resolve( __dirname, 'CHANGELOG.*' ), to: devFolder },
                     { from: path.resolve( __dirname, '*.php' ), to: devFolder }
-                ], {
-                copyUnmodified: false
+                ]
             } ),
         );
     }
 
     return {
         entry: {
-            "public/js/public-" : path.resolve(__dirname, 'src', 'public.js'),
             "admin/js/admin-" : path.resolve(__dirname, 'src', 'admin.js')
         },
         output: {

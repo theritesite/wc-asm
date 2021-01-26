@@ -1,27 +1,36 @@
 === Plugin Name ===
 Contributors: theritesites
 Donate link: https://www.theritesites.com
-Tags: 
+Tags: woocommerce shipping methods, time based shipping, advanced shipping
 Requires at least: 4.0
-Tested up to: 5.2
+Tested up to: 5.6
 Stable tag: trunk
 License: GPLv2
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
-Here is a short description of the plugin.  This should be no more than 150 characters.  No markup here.
+Offer shipping methods to customers based on quantities, classes, or categories!
 
 == Description ==
 
-This is the long description.  No limit, and you can use Markdown (as well as in the following sections).
+Are you a business owner who likes to offer your customers the best? Do you also like to be able to pack up early on a Friday?
+Now you can be both! Offer your customers the BEST shipping deals that are going to get out TODAY! Charge an extra fee (or don't), but cut the deal off at 3pm on Friday (or any other day!)
 
-For backwards compatibility, if this section is missing, the full length of the short description will be used, and
-Markdown parsed.
+Promote shipping deals on special orders that let YOU guide your customers into making decisions that benefit your bottom line.
+
+**Example:**
+Average order is 1 t-shirt for $20. It costs you $6 to ship anywhere with your rate. If a customer orders up to 3 t-shirts, it still only costs you $6 to ship.
+Using this plugin, you can make a ruleset either via product categories or shipping classes to offer a new shipping rate if a customer orders 2 or 3 t-shirts rather than 1 or 4+
+
+**Example 2:**
+You have a scheduled pickup with your shipping service of choice TheRiteShipping Co. at 3:30pm every day. On your website you have "2 day delivery" as an option, but it really counts as 3+ days if they order at 3:45pm.
+Using this plugin, you can disable the "2 day shipping" option at 3:30pm every day until midnight or even over a weekend (or time span) to reduce friction and confusion among your customers.
+
+See screenshots for examples of making an "advanced flat rate" method.
 
 == Installation ==
 
-1. Upload `wc-asm.php` to the `/wp-content/plugins/` directory
+1. Upload `woo-advanced-shipping-methods` to the `/wp-content/plugins/` directory
 2. Activate the plugin through the 'Plugins' menu in WordPress
-3. Place `<?php do_action('plugin_name_hook'); ?>` in your templates
 
 == Frequently Asked Questions ==
 
@@ -31,53 +40,9 @@ An answer to that question.
 
 == Screenshots ==
 
-1. This screen shot description corresponds to screenshot-1.(png|jpg|jpeg|gif). Note that the screenshot is taken from
-the /assets directory or the directory that contains the stable readme.txt (tags or trunk). Screenshots in the /assets
-directory take precedence. For example, `/assets/screenshot-1.png` would win over `/tags/4.3/screenshot-1.png`
-(or jpg, jpeg, gif).
-2. This is the second screen shot
 
 == Changelog ==
 
 = 1.0 =
 * A change since the previous version.
 * Another change.
-
-= 0.5 =
-* List versions from most recent at top to oldest at bottom.
-
-== Upgrade Notice ==
-
-= 1.0 =
-Upgrade notices describe the reason a user should upgrade.  No more than 300 characters.
-
-== Arbitrary section ==
-
-You may provide arbitrary sections, in the same format as the ones above.  This may be of use for extremely complicated
-plugins where more information needs to be conveyed that doesn't fit into the categories of "description" or
-"installation."  Arbitrary sections will be shown below the built-in sections outlined above.
-
-== A brief Markdown Example ==
-
-Ordered list:
-
-1. Some feature
-1. Another feature
-1. Something else about the plugin
-
-Unordered list:
-
-* something
-* something else
-* third thing
-
-Here's a link to [WordPress](http://wordpress.org/ "Your favorite software") and one to [Markdown's Syntax Documentation][markdown syntax].
-Titles are optional, naturally.
-
-[markdown syntax]: http://daringfireball.net/projects/markdown/syntax
-            "Markdown is what the parser uses to process much of the readme file"
-
-Markdown uses email style notation for blockquotes and I've been told:
-> Asterisks for *emphasis*. Double it up  for **strong**.
-
-`<?php code(); // goes in backticks ?>`

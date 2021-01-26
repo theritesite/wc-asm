@@ -1,18 +1,20 @@
 {
-	"name": "plugin-full-name",
-	"title": "WordPress Plugin Boilerplate",
+	"name": "woocommerce-advanced-shipping-methods",
+	"title": "WooCommerce Advanced Shipping Methods",
 	"version": "1.0.0",
-	"description": "This is a short description of what the plugin does. It's displayed in the WordPress admin area.",
+	"description": "Give customers shipping options based on what time it is, quantities, shipping classes, or product categories",
 	"author": {
-		"name": "Your Name or Your Company",
-		"url": "http://example.com/?"
+		"name": "The Rite Sites",
+		"url": "https://www.theritesites.com"
 	},
 	"license": "GPL-2.0-only",
 	"scripts": {
 		"start-c": "webpack --mode=development --env.NODE_ENV=development --env.LOC=corsair --watch",
 		"start-m": "webpack --mode=development --env.NODE_ENV=development --env.LOC=mac --watch",
 		"build-c": "webpack --mode=production --env.NODE_ENV=production --env.LOC=corsair",
-		"build-m": "webpack --mode=production --env.NODE_ENV=production --env.LOC=mac"
+		"build-m": "webpack --mode=production --env.NODE_ENV=production --env.LOC=mac",
+		"start-m1": "webpack --mode=development --env.NODE_ENV=development --env.LOC=m1 --watch",
+		"build-m1": "webpack --mode=production --env.NODE_ENV=production --env.LOC=m1"
 	},
 	"devDependencies": {
 		"autoprefixer": "latest",
@@ -22,24 +24,25 @@
 		"babel-preset-react": "^6.1.18",
 		"browser-sync": "^2.24.6",
 		"browser-sync-webpack-plugin": "^2.2.2",
-		"copy-webpack-plugin": "^4.5.2",
+		"copy-webpack-plugin": "^6.4.1",
 		"css-loader": "^3.1.0",
 		"mini-css-extract-plugin": "^0.8.0",
 		"optimize-css-assets-webpack-plugin": "^5.0.3",
-		"uglifyjs-webpack-plugin": "^2.2.0",
+		"uglifyjs-webpack-plugin": "^1.1.2",
 		"webpack": "^4.16.5",
 		"webpack-cli": "^3.3.6",
 		"webpack-dev-server": "^3.1.11",
 		"webpack-zip-plugin": "^0.1.6"
 	},
 	"dependencies": {
-		"axios": "^0.19.0",
+		"axios": "^0.21.1",
 		"lodash": "^4.17.15",
 		"react": "^16.8.6",
 		"react-dom": "^16.8.6",
 		"react-redux": "^7.1.0",
 		"react-router-dom": "^5.0.1",
 		"redux": "^4.0.4",
-		"redux-promise": "^0.6.0"
+		"redux-promise": "^0.6.0",
+		"serialize-javascript": "^3.1.0"
 	}
 }
