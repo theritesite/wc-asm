@@ -9,8 +9,8 @@
  * @link       https://www.theritesites.com
  * @since      1.0.0
  *
- * @package    WC_ASM
- * @subpackage WC_ASM/includes
+ * @package    ASM_WC
+ * @subpackage ASM_WC/includes
  */
 
 /**
@@ -20,11 +20,11 @@
  * so that it is ready for translation.
  *
  * @since      1.0.0
- * @package    WC_ASM
- * @subpackage WC_ASM/includes
+ * @package    ASM_WC
+ * @subpackage ASM_WC/includes
  * @author     TheRiteSites <contact@theritesites.com>
  */
-class WC_ASM_i18n {
+class ASM_WC_i18n {
 
 
 	/**
@@ -35,7 +35,7 @@ class WC_ASM_i18n {
 	public function load_plugin_textdomain() {
 
 		load_plugin_textdomain(
-			'wc-asm',
+			'asm-wc',
 			false,
 			dirname( dirname( plugin_basename( __FILE__ ) ) ) . '/languages/'
 		);

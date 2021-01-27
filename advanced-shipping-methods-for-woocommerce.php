@@ -3,10 +3,10 @@
 /**
  * @link              https://www.theritesites.com
  * @since             1.0.0
- * @package           WC_ASM
+ * @package           ASM_WC
  *
  * @wordpress-plugin
- * Plugin Name:       WC Advanced Shipping Methods
+ * Plugin Name:       Advanced Shipping Methods for WooCommerce
  * Plugin URI:        https://www.theritesites.com/plugins/
  * Description:       When your shipping methods dont quite fit your work routines! Restrict by time, shipping class, category, or quantity.
  * Version:           1.0.0
@@ -14,7 +14,7 @@
  * Author URI:        https://www.theritesites.com
  * License:           GPL-2.0+
  * License URI:       http://www.gnu.org/licenses/gpl-2.0.txt
- * Text Domain:       wc-asm
+ * Text Domain:       asm-wc
  * Domain Path:       /languages
  */
 
@@ -26,7 +26,7 @@ if ( ! defined( 'WPINC' ) ) {
 /**
  * Current plugin version.
  */
-define( 'WC_ASM_VERSION', '1.0.0' );
+define( 'ASM_WC_VERSION', '1.0.0' );
 
 if ( ! function_exists( 'is_woocommerce_active' ) ) {
 	require_once( 'woo-includes/woo-functions.php' );
@@ -36,7 +36,7 @@ if ( ! function_exists( 'is_woocommerce_active' ) ) {
  * The core plugin class that is used to define internationalization,
  * admin-specific hooks, and public-facing site hooks.
  */
-require plugin_dir_path( __FILE__ ) . 'includes/class-wc-asm.php';
+require plugin_dir_path( __FILE__ ) . 'includes/class-asm-wc.php';
 
 /**
  * Begins execution of the plugin.
@@ -47,10 +47,10 @@ require plugin_dir_path( __FILE__ ) . 'includes/class-wc-asm.php';
  *
  * @since    1.0.0
  */
-function run_wc_asm() {
+function run_asm_wc() {
 
-	$plugin = new WC_ASM();
+	$plugin = new ASM_WC();
 	$plugin->run();
 
 }
-run_wc_asm();
+run_asm_wc();

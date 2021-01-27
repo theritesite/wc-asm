@@ -1,10 +1,10 @@
 (function( $ ) {
 
 	$( document ).ready(function() {
-		$( 'select#woocommerce_wc_asm_categories' ).trigger( 'checkCategories' );
+		$( 'select#woocommerce_asm_wc_categories' ).trigger( 'checkCategories' );
 	});
 
-	$( document ).on( 'change', 'select#woocommerce_wc_asm_categories', function(e) { $( this ).trigger( 'checkCategories' ); } );
+	$( document ).on( 'change', 'select#woocommerce_asm_wc_categories', function(e) { $( this ).trigger( 'checkCategories' ); } );
 
 	var displayCatQtyFields = function( arr ) {
 		if ( shippingZoneMethods2LocalizeScript.debug === true ) {
@@ -15,9 +15,9 @@
 			if ( shippingZoneMethods2LocalizeScript.debug === true ) {
 				console.log( opt );
 			}
-			var $el  = $( '#woocommerce_wc_asm_' + opt + '_qty_min' ).closest( 'tr' );
-			var $el2 = $( '#woocommerce_wc_asm_' + opt + '_qty_max' ).closest( 'tr' );
-			var $el3 = $( '#woocommerce_wc_asm_' + opt + '_cost' ).closest( 'tr' );
+			var $el  = $( '#woocommerce_asm_wc_' + opt + '_qty_min' ).closest( 'tr' );
+			var $el2 = $( '#woocommerce_asm_wc_' + opt + '_qty_max' ).closest( 'tr' );
+			var $el3 = $( '#woocommerce_asm_wc_' + opt + '_cost' ).closest( 'tr' );
 			if ( arr[opt] === 1 ) {
 				$el.removeClass( 'hidden' );
 				$el2.removeClass( 'hidden' );
@@ -31,7 +31,7 @@
 		});
 	};
 
-	$( document ).on( 'checkCategories', 'select#woocommerce_wc_asm_categories', function(e) {
+	$( document ).on( 'checkCategories', 'select#woocommerce_asm_wc_categories', function(e) {
 		
 		var options = this.selectedOptions;
 		var selected = set_arr = [];
@@ -41,7 +41,7 @@
 			selected.push( options[opt].value );
 		});
 
-		values = $.map( $( 'select#woocommerce_wc_asm_categories option' ), function(e){
+		values = $.map( $( 'select#woocommerce_asm_wc_categories option' ), function(e){
 			return e.value;
 		});
 

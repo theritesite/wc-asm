@@ -6,8 +6,8 @@
  * @link       https://www.theritesites.com
  * @since      1.0.0
  *
- * @package    WC_ASM
- * @subpackage WC_ASM/includes
+ * @package    ASM_WC
+ * @subpackage ASM_WC/includes
  */
 
 /**
@@ -17,11 +17,11 @@
  * the plugin, and register them with the WordPress API. Call the
  * run function to execute the list of actions and filters.
  *
- * @package    WC_ASM
- * @subpackage WC_ASM/includes
+ * @package    ASM_WC
+ * @subpackage ASM_WC/includes
  * @author     TheRiteSites <contact@theritesites.com>
  */
-class WC_ASM_Loader {
+class ASM_WC_Loader {
 
 	/**
 	 * The array of actions registered with WordPress.

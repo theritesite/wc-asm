@@ -4,7 +4,7 @@
  *
  * Checks if WooCommerce
  */
-class WC_ASM_Dependencies {
+class ASM_WC_Dependencies {
 
 	private static $active_plugins;
 

@@ -2,10 +2,10 @@
 
 	$( document ).ready(function() {
 		$( 'input.timepicker.input-text.regular-input' ).timepicker({ dropdown: true, scrollbar: true });
-		$( 'input#woocommerce_wc_asm_toggler' ).trigger( 'checkTimeLimited' );
+		$( 'input#woocommerce_asm_wc_toggler' ).trigger( 'checkTimeLimited' );
 	});
 
-	$( document ).on( 'change', 'input#woocommerce_wc_asm_toggler', function(e){ $( this ).trigger( 'checkTimeLimited' )});
+	$( document ).on( 'change', 'input#woocommerce_asm_wc_toggler', function(e){ $( this ).trigger( 'checkTimeLimited' )});
 
 	var displayTimeFields = function( arg ) {
 		if ( shippingZoneMethods2LocalizeScript.debug === true ) {
@@ -21,7 +21,7 @@
 		}
 	}
 
-	$( document ).on( 'checkTimeLimited', 'input#woocommerce_wc_asm_toggler', function(e) {
+	$( document ).on( 'checkTimeLimited', 'input#woocommerce_asm_wc_toggler', function(e) {
 		console.log( $( this ).prop( 'checked' ) );
 		displayTimeFields( $( this ).prop( 'checked' ) === true ? 1 : 0 );
 	});

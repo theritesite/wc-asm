@@ -9,8 +9,8 @@
  * @link       https://www.theritesites.com
  * @since      1.0.0
  *
- * @package    WC_ASM
- * @subpackage WC_ASM/includes
+ * @package    ASM_WC
+ * @subpackage ASM_WC/includes
  */
 
 /**
@@ -23,11 +23,11 @@
  * version of the plugin.
  *
  * @since      1.0.0
- * @package    WC_ASM
- * @subpackage WC_ASM/includes
+ * @package    ASM_WC
+ * @subpackage ASM_WC/includes
  * @author     TheRiteSites <contact@theritesites.com>
  */
-class WC_ASM {
+class ASM_WC {
 
 	/**
 	 * The loader that's responsible for maintaining and registering all hooks that power
@@ -35,7 +35,7 @@ class WC_ASM {
 	 *
 	 * @since    1.0.0
 	 * @access   protected
-	 * @var      WC_ASM_Loader    $loader    Maintains and registers all hooks for the plugin.
+	 * @var      ASM_WC_Loader    $loader    Maintains and registers all hooks for the plugin.
 	 */
 	protected $loader;
 
@@ -67,12 +67,12 @@ class WC_ASM {
 	 * @since    1.0.0
 	 */
 	public function __construct() {
-		if ( defined( 'WC_ASM_VERSION' ) ) {
-			$this->version = WC_ASM_VERSION;
+		if ( defined( 'ASM_WC_VERSION' ) ) {
+			$this->version = ASM_WC_VERSION;
 		} else {
 			$this->version = '1.0.0';
 		}
-		$this->plugin_name = 'wc-asm';
+		$this->plugin_name = 'asm-wc';
 
 		$this->load_dependencies();
 		$this->set_locale();
@@ -85,10 +85,10 @@ class WC_ASM {
 	 *
 	 * Include the following files that make up the plugin:
 	 *
-	 * - WC_ASM_Loader. Orchestrates the hooks of the plugin.
-	 * - WC_ASM_i18n. Defines internationalization functionality.
-	 * - WC_ASM_Admin. Defines all hooks for the admin area.
-	 * - WC_ASM_Public. Defines all hooks for the public side of the site.
+	 * - ASM_WC_Loader. Orchestrates the hooks of the plugin.
+	 * - ASM_WC_i18n. Defines internationalization functionality.
+	 * - ASM_WC_Admin. Defines all hooks for the admin area.
+	 * - ASM_WC_Public. Defines all hooks for the public side of the site.
 	 *
 	 * Create an instance of the loader which will be used to register the hooks
 	 * with WordPress.
@@ -102,27 +102,27 @@ class WC_ASM {
 		 * The class responsible for orchestrating the actions and filters of the
 		 * core plugin.
 		 */
-		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'includes/class-wc-asm-loader.php';
+		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'includes/class-asm-wc-loader.php';
 
 		/**
 		 * The class responsible for defining internationalization functionality
 		 * of the plugin.
 		 */
-		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'includes/class-wc-asm-i18n.php';
+		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'includes/class-asm-wc-i18n.php';
 
 		/**
 		 * The class responsible for defining all actions that occur in the admin area.
 		 */
-		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'admin/class-wc-asm-admin.php';
+		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'admin/class-asm-wc-admin.php';
 
-		$this->loader = new WC_ASM_Loader();
+		$this->loader = new ASM_WC_Loader();
 
 	}
 
 	/**
 	 * Define the locale for this plugin for internationalization.
 	 *
-	 * Uses the WC_ASM_i18n class in order to set the domain and to register the hook
+	 * Uses the ASM_WC_i18n class in order to set the domain and to register the hook
 	 * with WordPress.
 	 *
 	 * @since    1.0.0
@@ -130,7 +130,7 @@ class WC_ASM {
 	 */
 	private function set_locale() {
 
-		$plugin_i18n = new WC_ASM_i18n();
+		$plugin_i18n = new ASM_WC_i18n();
 
 		$this->loader->add_action( 'plugins_loaded', $plugin_i18n, 'load_plugin_textdomain' );
 
@@ -145,12 +145,12 @@ class WC_ASM {
 	 */
 	private function define_admin_hooks() {
 
-		$plugin_admin = new WC_ASM_Admin( $this->get_plugin_name(), $this->get_version() );
+		$plugin_admin = new ASM_WC_Admin( $this->get_plugin_name(), $this->get_version() );
 
 		$this->loader->add_action( 'admin_enqueue_scripts', $plugin_admin, 'enqueue_styles' );
 		$this->loader->add_action( 'admin_enqueue_scripts', $plugin_admin, 'enqueue_scripts' );
 
-		// $this->loader->add_filter( 'woocommerce_form_field_toggler', $plugin_admin, 'wc_asm_toggler_handler', 10, 4 );
+		// $this->loader->add_filter( 'woocommerce_form_field_toggler', $plugin_admin, 'asm_WC_toggler_handler', 10, 4 );
 
 		$this->loader->add_filter( 'woocommerce_init', $plugin_admin, 'init_wc_hooks' );
 
@@ -180,7 +180,7 @@ class WC_ASM {
 	 * The reference to the class that orchestrates the hooks with the plugin.
 	 *
 	 * @since     1.0.0
-	 * @return    WC_ASM_Loader    Orchestrates the hooks of the plugin.
+	 * @return    ASM_WC_Loader    Orchestrates the hooks of the plugin.
 	 */
 	public function get_loader() {
 		return $this->loader;

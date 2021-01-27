@@ -2,14 +2,14 @@
 /**
  * Functions used by plugins
  */
-if ( ! class_exists( 'WC_ASM_Dependencies' ) )
-	require_once 'class-wc-asm-dependencies.php';
+if ( ! class_exists( 'ASM_WC_Dependencies' ) )
+	require_once 'class-asm-wc-dependencies.php';
 
 /**
  * WC Detection
  */
 if ( ! function_exists( 'is_woocommerce_active' ) ) {
 	function is_woocommerce_active() {
-		return WC_ASM_Dependencies::woocommerce_active_check();
+		return ASM_WC_Dependencies::woocommerce_active_check();
 	}
 }

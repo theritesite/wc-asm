@@ -6,7 +6,7 @@ const OptimizeCSSAssetsPlugin = require("optimize-css-assets-webpack-plugin");
 const UglifyJsPlugin = require("uglifyjs-webpack-plugin");
 const MiniCSSExtractPlugin = require('mini-css-extract-plugin');
 
-const pluginSlug = 'wc-advanced-shipping-methods';
+const pluginSlug = 'advanced-shipping-methods-for-woocommerce';
 
 const buildFolder = path.resolve( __dirname, pluginSlug );
 // const vendorFolder = path.resolve( buildFolder, 'vendor' );

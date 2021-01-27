@@ -1,4 +1,4 @@
-=== WC Advanced Shipping Methods ===
+=== Advanced Shipping Methods for WooCommerce ===
 Contributors: theritesites
 Donate link: https://www.theritesites.com
 Tags: woocommerce shipping methods, time based shipping, advanced shipping

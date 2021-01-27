@@ -1,10 +1,10 @@
 (function( $ ) {
 
 	$( document ).ready(function() {
-		$( 'select#woocommerce_wc_asm_classes' ).trigger( 'checkClasses' );
+		$( 'select#woocommerce_asm_wc_classes' ).trigger( 'checkClasses' );
 	});
 
-	$( document ).on( 'change', 'select#woocommerce_wc_asm_classes', function(e) { $( this ).trigger( 'checkClasses' );} );
+	$( document ).on( 'change', 'select#woocommerce_asm_wc_classes', function(e) { $( this ).trigger( 'checkClasses' );} );
 
 	var displayClassQtyFields = function( arr ) {
 		if ( shippingZoneMethods2LocalizeScript.debug === true ) {
@@ -15,8 +15,8 @@
 			if ( shippingZoneMethods2LocalizeScript.debug === true ) {
 				console.log(opt);
 			}
-			var $el  = $( '#woocommerce_wc_asm_' + opt + '_qty' ).closest( 'tr' );
-			var $el2 = $( '#woocommerce_wc_asm_' + opt + '_cost' ).closest( 'tr' );
+			var $el  = $( '#woocommerce_asm_wc_' + opt + '_qty' ).closest( 'tr' );
+			var $el2 = $( '#woocommerce_asm_wc_' + opt + '_cost' ).closest( 'tr' );
 			if ( arr[opt] === 1 ) {
 				$el.removeClass( 'hidden' );
 				$el2.removeClass( 'hidden' );
@@ -28,7 +28,7 @@
 		});
 	};
 
-	$( document ).on( 'checkClasses', 'select#woocommerce_wc_asm_classes', function(e) {
+	$( document ).on( 'checkClasses', 'select#woocommerce_asm_wc_classes', function(e) {
 		
 		var options = this.selectedOptions;
 		var selected = set_arr = [];
@@ -38,7 +38,7 @@
 			selected.push( options[opt].value );
 		});
 
-		values = $.map( $( 'select#woocommerce_wc_asm_classes option' ), function(e){
+		values = $.map( $( 'select#woocommerce_asm_wc_classes option' ), function(e){
 			return e.value;
 		});
 

@@ -2,14 +2,14 @@
 
 	$( document ).ready(function() {
 		$( 'input.timepicker.input-text.regular-input' ).timepicker({ dropdown: true, scrollbar: true });
-		$( 'input#woocommerce_wc_asm_toggler' ).trigger( 'checkTimeLimited' );
-		$( 'select#woocommerce_wc_asm_classes' ).trigger( 'checkClasses' );
-		$( 'select#woocommerce_wc_asm_categories' ).trigger( 'checkCategories' );
+		$( 'input#woocommerce_asm_wc_toggler' ).trigger( 'checkTimeLimited' );
+		$( 'select#woocommerce_asm_wc_classes' ).trigger( 'checkClasses' );
+		$( 'select#woocommerce_asm_wc_categories' ).trigger( 'checkCategories' );
 	});
 
-	$( document ).on( 'change', 'select#woocommerce_wc_asm_classes', function(e) {$( this ).trigger( 'checkClasses' );})
-					  .on( 'change', 'input#woocommerce_wc_asm_toggler', function(e){$( this ).trigger( 'checkTimeLimited' )})
-					  .on( 'change', 'select#woocommerce_wc_asm_categories', function(e) {$( this ).trigger( 'checkCategories' );});
+	$( document ).on( 'change', 'select#woocommerce_asm_wc_classes', function(e) {$( this ).trigger( 'checkClasses' );})
+					  .on( 'change', 'input#woocommerce_asm_wc_toggler', function(e){$( this ).trigger( 'checkTimeLimited' )})
+					  .on( 'change', 'select#woocommerce_asm_wc_categories', function(e) {$( this ).trigger( 'checkCategories' );});
 
 	var displayCatQtyFields = function( arr ) {
 		if ( shippingZoneMethods2LocalizeScript.debug === true ) {
@@ -20,9 +20,9 @@
 			if ( shippingZoneMethods2LocalizeScript.debug === true ) {
 				console.log( opt );
 			}
-			var $el  = $( '#woocommerce_wc_asm_' + opt + '_qty_min' ).closest( 'tr' );
-			var $el2 = $( '#woocommerce_wc_asm_' + opt + '_qty_max' ).closest( 'tr' );
-			var $el3 = $( '#woocommerce_wc_asm_' + opt + '_cost' ).closest( 'tr' );
+			var $el  = $( '#woocommerce_asm_wc_' + opt + '_qty_min' ).closest( 'tr' );
+			var $el2 = $( '#woocommerce_asm_wc_' + opt + '_qty_max' ).closest( 'tr' );
+			var $el3 = $( '#woocommerce_asm_wc_' + opt + '_cost' ).closest( 'tr' );
 			if ( arr[opt] === 1 ) {
 				$el.removeClass( 'hidden' );
 				$el2.removeClass( 'hidden' );
@@ -36,7 +36,7 @@
 		});
 	};
 
-	$( document ).on( 'checkCategories', 'select#woocommerce_wc_asm_categories', function(e) {
+	$( document ).on( 'checkCategories', 'select#woocommerce_asm_wc_categories', function(e) {
 		
 		var options = this.selectedOptions;
 		var selected = set_arr = [];
@@ -46,7 +46,7 @@
 			selected.push( options[opt].value );
 		});
 
-		values = $.map( $( 'select#woocommerce_wc_asm_categories option' ), function(e){
+		values = $.map( $( 'select#woocommerce_asm_wc_categories option' ), function(e){
 			return e.value;
 		});
 
@@ -83,7 +83,7 @@
 		}
 	}
 
-	$( document ).on( 'checkTimeLimited', 'input#woocommerce_wc_asm_toggler', function(e) {
+	$( document ).on( 'checkTimeLimited', 'input#woocommerce_asm_wc_toggler', function(e) {
 		console.log( $( this ).prop( 'checked' ) );
 		displayTimeFields( $( this ).prop( 'checked' ) === true ? 1 : 0 );
 	});
@@ -97,8 +97,8 @@
 			if ( shippingZoneMethods2LocalizeScript.debug === true ) {
 				console.log(opt);
 			}
-			var $el  = $( '#woocommerce_wc_asm_' + opt + '_qty' ).closest( 'tr' );
-			var $el2 = $( '#woocommerce_wc_asm_' + opt + '_cost' ).closest( 'tr' );
+			var $el  = $( '#woocommerce_asm_wc_' + opt + '_qty' ).closest( 'tr' );
+			var $el2 = $( '#woocommerce_asm_wc_' + opt + '_cost' ).closest( 'tr' );
 			if ( arr[opt] === 1 ) {
 				$el.removeClass( 'hidden' );
 				$el2.removeClass( 'hidden' );
@@ -110,7 +110,7 @@
 		});
 	};
 
-	$( document ).on( 'checkClasses', 'select#woocommerce_wc_asm_classes', function(e) {
+	$( document ).on( 'checkClasses', 'select#woocommerce_asm_wc_classes', function(e) {
 		
 		var options = this.selectedOptions;
 		var selected = set_arr = [];
@@ -120,7 +120,7 @@
 			selected.push( options[opt].value );
 		});
 
-		values = $.map( $( 'select#woocommerce_wc_asm_classes option' ), function(e){
+		values = $.map( $( 'select#woocommerce_asm_wc_classes option' ), function(e){
 			return e.value;
 		});
 

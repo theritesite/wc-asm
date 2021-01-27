@@ -7,11 +7,11 @@ if ( ! defined( 'ABSPATH' ) ) {
  *
  * @link       https://www.theritesites.com
  * @since      1.0.0
- * @package    WC_ASM
- * @subpackage WC_ASM/admin
+ * @package    ASM_WC
+ * @subpackage ASM_WC/admin
  * @author     TheRiteSites <contact@theritesites.com>
  */
-class WC_ASM_Shipping_Method extends WC_Shipping_Method {
+class ASM_WC_Shipping_Method extends WC_Shipping_Method {
 
     /**
 	 * Constructor.
@@ -19,10 +19,10 @@ class WC_ASM_Shipping_Method extends WC_Shipping_Method {
 	 * @param int $instance_id
 	 */
 	public function __construct( $instance_id = 0 ) {
-		$this->id                    = 'wc_asm';
+		$this->id                    = 'asm_wc';
 		$this->instance_id 			 = absint( $instance_id );
-		$this->method_title          = __( 'Advanced Flat Rate', 'wc-asm' );
-		$this->method_description    = __( 'Lets you charge rates according to cart contents with time limitations.', 'wc-asm' );
+		$this->method_title          = __( 'Advanced Flat Rate', 'asm-wc' );
+		$this->method_description    = __( 'Lets you charge rates according to cart contents with time limitations.', 'asm-wc' );
 		$this->supports              = array(
 			'shipping-zones',
 			'instance-settings',
@@ -37,7 +37,7 @@ class WC_ASM_Shipping_Method extends WC_Shipping_Method {
 	 * init user set variables.
 	 */
 	public function init() {
-		$this->instance_form_fields = include( 'settings-wc-asm.php' );
+		$this->instance_form_fields = include( 'settings-asm-wc.php' );
 
 		// use unset($this->instance_form_fields['classes'] etc to remove inputs.
 
@@ -121,7 +121,7 @@ class WC_ASM_Shipping_Method extends WC_Shipping_Method {
 		return $calculated_fee;
 	}
 
-	protected function wc_asm_check_categories( $l_b_c = array(), $package = array() ) {
+	protected function asm_wc_check_categories( $l_b_c = array(), $package = array() ) {
 		$categories_quantities	= array();
 		foreach ( $l_b_c as $categories ) {
 			$cat_qtys = array(
@@ -239,7 +239,7 @@ class WC_ASM_Shipping_Method extends WC_Shipping_Method {
 		}
 	}
 
-	protected function wc_asm_first_is_earlier( $first = array(), $second = array() ) {
+	protected function asm_wc_first_is_earlier( $first = array(), $second = array() ) {
 		if ( $first['day'] === $second['day'] ) {
 			if ( $first['hour'] < $second['hour'] ) {
 				return true;
@@ -272,7 +272,7 @@ class WC_ASM_Shipping_Method extends WC_Shipping_Method {
 		}
 	}
 
-	protected function wc_asm_check_time() {
+	protected function asm_wc_check_time() {
 		$stop_ship  = $this->get_option( 'day-stop' );
 		$stop_time  = $this->get_option( 'time-stop' );
 		
@@ -329,22 +329,22 @@ class WC_ASM_Shipping_Method extends WC_Shipping_Method {
 			error_log( 'begin s:   ' . $begin_seconds );
 		}
 
-		if ( $this->wc_asm_first_is_earlier( $stop_array, $current_array ) && $this->wc_asm_first_is_earlier( $current_array, $begin_array ) ) {
+		if ( $this->asm_wc_first_is_earlier( $stop_array, $current_array ) && $this->asm_wc_first_is_earlier( $current_array, $begin_array ) ) {
 			if ( defined('WP_DEBUG') && WP_DEBUG ) {
 				error_log( 'stop is before current.' );
 				error_log( 'current is before begin. Invalid.' ); // Reached here.
 			}
 			return false;
 		}
-		elseif ( $this->wc_asm_first_is_earlier( $stop_array, $begin_array ) ) {
+		elseif ( $this->asm_wc_first_is_earlier( $stop_array, $begin_array ) ) {
 			if ( defined('WP_DEBUG') && WP_DEBUG ) {
 				error_log( 'stop is before begin.' );
 			}
-			if ( $this->wc_asm_first_is_earlier( $current_array, $begin_array ) ) {
+			if ( $this->asm_wc_first_is_earlier( $current_array, $begin_array ) ) {
 				if ( defined('WP_DEBUG') && WP_DEBUG ) {
 					error_log( 'current is before begin.' ); // Reached here.
 				}
-				if ( $this->wc_asm_first_is_earlier( $current_array, $stop_array ) ) {
+				if ( $this->asm_wc_first_is_earlier( $current_array, $stop_array ) ) {
 					if ( defined('WP_DEBUG') && WP_DEBUG ) {
 						error_log( 'current is before stop. Valid. ' );
 					}
@@ -357,30 +357,30 @@ class WC_ASM_Shipping_Method extends WC_Shipping_Method {
 					return false;
 				}
 			}
-			if ( $this->wc_asm_first_is_earlier( $begin_array, $current_array ) ) {
+			if ( $this->asm_wc_first_is_earlier( $begin_array, $current_array ) ) {
 				if ( defined('WP_DEBUG') && WP_DEBUG ) {
 					error_log( 'begin is before current. Valid!' ); // Reached here.
 				}
 				return true;
 			}
 		}
-		elseif ( $this->wc_asm_first_is_earlier( $begin_array, $current_array ) ) {
+		elseif ( $this->asm_wc_first_is_earlier( $begin_array, $current_array ) ) {
 			if ( defined('WP_DEBUG') && WP_DEBUG ) {
 				error_log( 'begin is earlier than current' );
 			}
-			if ( $this->wc_asm_first_is_earlier( $stop_array, $current_array ) ) {
+			if ( $this->asm_wc_first_is_earlier( $stop_array, $current_array ) ) {
 				if ( defined('WP_DEBUG') && WP_DEBUG ) {
 					error_log( 'stop is earlier than current' );
 					error_log( 'both days are before the current time. Are we outside or inside the range?' );
 				}
-				if ( $this->wc_asm_first_is_earlier( $begin_array, $stop_array ) ) {
+				if ( $this->asm_wc_first_is_earlier( $begin_array, $stop_array ) ) {
 					if ( defined('WP_DEBUG') && WP_DEBUG ) {
 						error_log( 'begin is earlier than stop.' );
 						error_log( 'this means HUGE range, we are invalid.' ); // Reached here.
 					}
 					return false;
 				}
-				elseif ( $this->wc_asm_first_is_earlier( $stop_array, $begin_array ) ) {
+				elseif ( $this->asm_wc_first_is_earlier( $stop_array, $begin_array ) ) {
 					if ( defined('WP_DEBUG') && WP_DEBUG ) {
 						error_log( 'stop is earlier than begin' );
 						error_log( 'small range, we are okay. VALID.' ); // Reached here.
@@ -388,7 +388,7 @@ class WC_ASM_Shipping_Method extends WC_Shipping_Method {
 					return true;
 				}
 			}
-			if ( $this->wc_asm_first_is_earlier( $current_array, $stop_array ) ) {
+			if ( $this->asm_wc_first_is_earlier( $current_array, $stop_array ) ) {
 				if ( defined('WP_DEBUG') && WP_DEBUG ) {
 					error_log( 'current is earlier than stop. Valid.' );
 				}
@@ -396,18 +396,18 @@ class WC_ASM_Shipping_Method extends WC_Shipping_Method {
 			}
 		}
 		
-		elseif ( $this->wc_asm_first_is_earlier( $current_array, $stop_array ) && ( $this->wc_asm_first_is_earlier( $begin_array, $current_array ) || $this->wc_asm_first_is_earlier( $stop_array, $begin_array ) ) ) {
+		elseif ( $this->asm_wc_first_is_earlier( $current_array, $stop_array ) && ( $this->asm_wc_first_is_earlier( $begin_array, $current_array ) || $this->asm_wc_first_is_earlier( $stop_array, $begin_array ) ) ) {
 			error_log( 'current is before stop.' );
-			if ( $this->wc_asm_first_is_earlier( $begin_array, $current_array ) ) {
+			if ( $this->asm_wc_first_is_earlier( $begin_array, $current_array ) ) {
 				error_log( 'begin is before current. Valid.' );
 				return true;
 			}
-			if ( $this->wc_asm_first_is_earlier( $stop_array, $begin_array ) ) {
+			if ( $this->asm_wc_first_is_earlier( $stop_array, $begin_array ) ) {
 				error_log( 'stop is before begin, but all after current. Valid.' ); // Reached here.
 				return true;
 			}
 		}
-		// elseif ( $this->wc_asm_first_is_earlier( $current_array, $stop_array ) ) {
+		// elseif ( $this->asm_wc_first_is_earlier( $current_array, $stop_array ) ) {
 		// 	error_log( 'current is before stop. BUT begin is NOT before current AND stop is NOT before begin.' );
 		// } // This is probably never reached from the section above catching everything else.
 		else {
@@ -446,7 +446,7 @@ class WC_ASM_Shipping_Method extends WC_Shipping_Method {
 		
 		$limited_by_categories	= $this->get_option( 'categories' );
 		if ( ! empty( $limited_by_categories ) ) {
-			$result = $this->wc_asm_check_categories( $limited_by_categories, $package );
+			$result = $this->asm_wc_check_categories( $limited_by_categories, $package );
 			if ( false === $result ) {
 				return; 
 			}
@@ -455,7 +455,7 @@ class WC_ASM_Shipping_Method extends WC_Shipping_Method {
 		$limited_by_time = $this->get_option( 'toggler' );
 
 		if ( 'yes' === $limited_by_time ) {
-			$result = $this->wc_asm_check_time();
+			$result = $this->asm_wc_check_time();
 			if ( $result === false ) {
 				return;
 			}

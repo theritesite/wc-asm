@@ -8,8 +8,8 @@
  * @link       https://www.theritesites.com
  * @since      1.0.0
  *
- * @package    WC_ASM
- * @subpackage WC_ASM/admin/partials
+ * @package    ASM_WC
+ * @subpackage ASM_WC/admin/partials
  */
 ?>
 

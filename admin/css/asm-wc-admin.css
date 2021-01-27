@@ -2,26 +2,26 @@
  * All of the CSS for your admin-specific functionality should be
  * included in this file.
  */
-#woocommerce_wc_asm_class {
+#woocommerce_asm_wc_class {
     max-height: 50px;
     height: 50px;
     overflow-y: scroll;
 }
 
-/* #woocomerce_wc_asm_toggler {
+/* #woocomerce_asm_wc_toggler {
     position: relative;
     display: inline-block;
     width: 60px;
     height: 34px;
 } */
 
-/* #woocomerce_wc_asm_toggler {
+/* #woocomerce_asm_wc_toggler {
     opacity: 0;
     width: 0;
     height: 0;
 } */
 
-#woocommerce_wc_asm_toggler {
+#woocommerce_asm_wc_toggler {
     position: absolute;
     cursor: pointer;
     /* top: 0;
@@ -36,7 +36,7 @@
     height: 36px;
 }
 
-#woocommerce_wc_asm_toggler:before {
+#woocommerce_asm_wc_toggler:before {
     position: absolute;
     content: "";
     height: 26px;
@@ -49,15 +49,15 @@
     border-radius: 50%;
 }
 
-input:checked#woocommerce_wc_asm_toggler {
+input:checked#woocommerce_asm_wc_toggler {
     background-color: #2196F3;
 }
 
-input:focus#woocommerce_wc_asm_toggler {
+input:focus#woocommerce_asm_wc_toggler {
     box-shadow: 0 0 1px #2196F3;
 }
 
-input:checked#woocommerce_wc_asm_toggler:before {
+input:checked#woocommerce_asm_wc_toggler:before {
     -webkit-transform: translateX(36px);
     -ms-transform: translateX(36px);
     transform: translateX(36px);

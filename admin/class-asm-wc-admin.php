@@ -6,8 +6,8 @@
  * @link       https://www.theritesites.com
  * @since      1.0.0
  *
- * @package    WC_ASM
- * @subpackage WC_ASM/admin
+ * @package    ASM_WC
+ * @subpackage ASM_WC/admin
  */
 
 /**
@@ -16,11 +16,11 @@
  * Defines the plugin name, version, and two examples hooks for how to
  * enqueue the admin-specific stylesheet and JavaScript.
  *
- * @package    WC_ASM
- * @subpackage WC_ASM/admin
+ * @package    ASM_WC
+ * @subpackage ASM_WC/admin
  * @author     TheRiteSites <contact@theritesites.com>
  */
-class WC_ASM_Admin {
+class ASM_WC_Admin {
 
 	/**
 	 * The ID of this plugin.
@@ -64,11 +64,11 @@ class WC_ASM_Admin {
 		/**
 		 * The class responsible for defining all actions that occur in the admin area.
 		 */
-		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'admin/class-wc-asm-shipping-method.php';
+		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'admin/class-asm-wc-shipping-method.php';
 
 		add_action( 'woocommerce_load_shipping_methods', array( $this, 'register_shipping_method_test' ) );
 		add_action( 'woocommerce_shipping_methods', array( $this, 'register_shipping_method' ) );
-		add_filter( 'woocommerce_form_field_toggler', array( $this, 'wc_asm_toggler_handler' ), 10, 4 );
+		add_filter( 'woocommerce_form_field_toggler', array( $this, 'asm_wc_toggler_handler' ), 10, 4 );
 	}
 
 	/**
@@ -81,7 +81,7 @@ class WC_ASM_Admin {
 		
 		if ( is_admin() && 'admin.php' === $pagenow && isset( $_GET['page'] ) && 'wc-settings' === $_GET['page'] && isset( $_GET['tab'] ) && 'shipping' === $_GET['tab'] ) {
 			wp_enqueue_style( $this->plugin_name . '-timepicker', plugin_dir_url( __FILE__ ) . 'css/jquery.timepicker.css', array(), $this->version, 'all' );
-			wp_enqueue_style( $this->plugin_name, plugin_dir_url( __FILE__ ) . 'css/wc-asm-admin.css', array(), $this->version, 'all' );
+			wp_enqueue_style( $this->plugin_name, plugin_dir_url( __FILE__ ) . 'css/asm-wc-admin.css', array(), $this->version, 'all' );
 		}
 
 
@@ -100,14 +100,14 @@ class WC_ASM_Admin {
 		if ( is_admin() && 'admin.php' === $pagenow && isset( $_GET['page'] ) && 'wc-settings' === $_GET['page'] && isset( $_GET['tab'] ) && 'shipping' === $_GET['tab'] ) {
 			wp_enqueue_script( $this->plugin_name . '-timepicker', plugin_dir_url( __FILE__ ) . 'js/jquery.timepicker.js', array( 'jquery' ), $this->version, false );
 
-			wp_register_script( $this->plugin_name, plugin_dir_url( __FILE__ ) . 'js/wc-asm-admin.js', array( 'jquery'/*, 'wc-shipping-zone-methods'*/ ), $this->version );
+			wp_register_script( $this->plugin_name, plugin_dir_url( __FILE__ ) . 'js/asm-wc-admin.js', array( 'jquery'/*, 'wc-shipping-zone-methods'*/ ), $this->version );
 			wp_localize_script( $this->plugin_name, 'shippingZoneMethods2LocalizeScript', array(
 				'debug'
 			));
 			wp_enqueue_script( $this->plugin_name );
 
 		}
-		// wp_enqueue_script( $this->plugin_name, plugin_dir_url( __FILE__ ) . 'js/wc-asm-admin.js', array( 'jquery' ), $this->version, false );
+		// wp_enqueue_script( $this->plugin_name, plugin_dir_url( __FILE__ ) . 'js/asm-wc-admin.js', array( 'jquery' ), $this->version, false );
 
 	}
 
@@ -118,9 +118,8 @@ class WC_ASM_Admin {
 	 */
 	public function register_shipping_method( $shipping_methods = array() ) {
 		if ( ! empty( $shipping_methods ) ) {
-			$shipping_methods['wc_asm'] = 'WC_ASM_Shipping_Method';
+			$shipping_methods['asm_wc'] = 'ASM_WC_Shipping_Method';
 		}
-		// error_log('here and wc_adm registered');
 		return $shipping_methods;
 	}
 
