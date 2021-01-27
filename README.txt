@@ -41,9 +41,13 @@ An answer to that question.
 
 == Screenshots ==
 
+1. Category, Shipping Class, and Quantity based shipping method settings, check the next screenshot for the time limited settings just below these options on the screen.
+2. Time based settings, as well as extra Shipping Class based cost settings.
+3. Filled in Time Limited shipping method preventing this method form sahowing up from Friday at 3:30pm until Sunday at 11:30pm.
+4. Blank Time Limited shipping method settings.
+5. Example of the newly created "Advanced Flat Rate" Shipping Method within a Shipping Zone.
 
 == Changelog ==
 
 = 1.0 =
-* A change since the previous version.
-* Another change.
+* Initial Release
