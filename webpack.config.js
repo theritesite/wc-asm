@@ -2,8 +2,6 @@ const path = require( 'path' );
 const CopyWebpackPlugin = require( 'copy-webpack-plugin' );
 const WebpackZipPlugin = require('webpack-zip-plugin');
 const browserSyncPlugin = require( 'browser-sync-webpack-plugin' );
-const OptimizeCSSAssetsPlugin = require("optimize-css-assets-webpack-plugin");
-const UglifyJsPlugin = require("uglifyjs-webpack-plugin");
 const MiniCSSExtractPlugin = require('mini-css-extract-plugin');
 
 const pluginSlug = 'advanced-shipping-methods-for-woocommerce';
@@ -111,16 +109,6 @@ const config = env => {
             filename: './dist/' + pluginSlug + '.js',
             path: __dirname,
         },
-		optimization: {
-			minimizer: [
-				new UglifyJsPlugin({
-					cache: true,
-					parallel: true,
-					sourceMap: true // set to true if you want JS source maps
-				  }),
-				new OptimizeCSSAssetsPlugin({})
-			]
-		},
         module: {
             rules: [
                 {
